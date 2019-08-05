@@ -1,0 +1,29 @@
+{
+  "name": "pryv-bridge-thryve",
+  "description": "Thyve <> Pryv bridge",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/pryv/bridge-thryve.git"
+  },
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "node_modules/.bin/mocha 'test/**/*.test.js'"
+  },
+  "dependencies": {
+    "better-sqlite3": "^5.4.1",
+    "express": "^4.17.1",
+    "nconf": "^0.10.0",
+    "should": "^13.2.3",
+    "superagent": "^5.1.0",
+    "winston": "^3.2.1"
+  },
+  "devDependencies": {
+    "mocha": "^6.2.0"
+  }
+}
