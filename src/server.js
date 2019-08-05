@@ -3,6 +3,7 @@ const config = require('./config.js')
 const app = express()
 
 const user = require('./user.js');
+const storage = require('./storage.js');
 
 const port = config.get('server:port')
 
