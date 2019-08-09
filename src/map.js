@@ -1,9 +1,22 @@
 const definitions = require('./definitions');
 const logger = require('./logging');
 
-const rootStream = 'thryve';
+const rootStream = {id: 'thryve', defaultName: 'Thryve'};
 
-exports.thryveToPryv = function(sourceCode, data, isDaily) {
+exports.rootStream = rootStream;
+
+/**
+ * convert a data item from Thryve to Streams and Events data
+ * 
+ * @param {Integer} sourceCode Thryve Data Source code
+ * @param {Object} data Data as per Thryve API
+ * 
+ * @return {Object} {streams: Array of streams, event: Pryv event}
+ */
+exports.thryveToPryv = function(sourceCode, data) {
+
+  let isDaily = false;
+  if (data.day) { isDaily = true; }
 
   const source = definitions.sources[sourceCode];
   if (! source) {
@@ -11,7 +24,13 @@ exports.thryveToPryv = function(sourceCode, data, isDaily) {
     return null;
   }
 
-  const dataCode = isDaily ? 'd' : 'i' + data.dynamicValueType;
+  const numCode = data[isDaily ? 'dailyDynamicValueType' : 'dynamicValueType'];
+  if (! numCode) {
+    logger.warn('Cannot find dataCode for: ' + data);
+    return null;
+  }
+
+  const dataCode = (isDaily ? 'd' : 'i') + numCode;
   const dataType = definitions.dataTypes[dataCode];
 
   if (!dataType) {
@@ -28,7 +47,7 @@ exports.thryveToPryv = function(sourceCode, data, isDaily) {
     return null;
   }
 
-  const level1stream = isDaily ?  { id: rootStream + '.daily', defaultName: 'Daily', parentId: rootStream } : { id: rootStream + '.intraday', defaultName: 'Intraday', parentId: rootStream };
+  const level1stream = isDaily ? { id: rootStream.id + '.daily', defaultName: 'Daily', parentId: rootStream.id } : { id: rootStream.id + '.intraday', defaultName: 'Intraday', parentId: rootStream.id };
 
   const level2Stream = {
     id: level1stream.id + '.' + dataType.streamCode,
@@ -45,13 +64,16 @@ exports.thryveToPryv = function(sourceCode, data, isDaily) {
   const event = { 
     streamId: level3Stream.id,
     type: dataType.type,
-    time: Date.parse(data.timestamp) / 1000,
+    time: Date.parse(data[isDaily ? 'day' : 'timestamp']) / 1000,
     content: dataType.converter(data)
   }
 
-  if (! isDaily) {
+
+  if (isDaily) {
+    event.duration = 60 * 60 * 24;
+  } else {
     event.duration = 60;
   }
 
-  return {streams: [level1stream, level2Stream, level3Stream], event: event};
+  return { streams: [rootStream, level1stream, level2Stream, level3Stream], event: event};
 }

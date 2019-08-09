@@ -22,8 +22,8 @@ exports.userInfo = function(authenticationToken) {
  * @param {Date} start
  * @param {Date} stop
  */
-exports.dynamicValues = function(authenticationToken, start, stop) {
-  return post(thryveAPI.dynamicValues, authenticationToken)
+exports.dynamicValues = function(authenticationToken, start, stop, daily) {
+  return post(daily ? thryveAPI.dailyDynamicValues : thryveAPI.dynamicValues, authenticationToken)
     .send('startTimestamp=' + start.toISOString().split('.')[0] + 'Z')
     .send('endTimestamp=' + stop.toISOString().split('.')[0] + 'Z');
 }
