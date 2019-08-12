@@ -4,7 +4,12 @@ const conf = require('./config.js');
 const thryveAPI = conf.get('thryveAPI');
 const thryveInfo = conf.get('thryve');
 
-
+/**
+ * Post to Thryve API
+ * 
+ * @param {URL} url 
+ * @param {String} authenticationToken 
+ */
 function post(url, authenticationToken) {
   return request
   .post(url)
@@ -14,6 +19,9 @@ function post(url, authenticationToken) {
   .send('authenticationToken=' + authenticationToken);
 }
 
+/**
+ * Retrive userInfo
+ */
 exports.userInfo = function(authenticationToken) {
   return post(thryveAPI.userInfo, authenticationToken);
 }
@@ -21,6 +29,7 @@ exports.userInfo = function(authenticationToken) {
 /**
  * @param {Date} start
  * @param {Date} stop
+ * @param {Boolean} daily if true get Daily values, false to receive intraday
  */
 exports.dynamicValues = function(authenticationToken, start, stop, daily) {
   return post(daily ? thryveAPI.dailyDynamicValues : thryveAPI.dynamicValues, authenticationToken)

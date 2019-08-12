@@ -1,7 +1,8 @@
 const definitions = require('./definitions');
 const logger = require('./logging');
 
-const rootStream = {id: 'thryve', defaultName: 'Thryve'};
+const rootStream = {id: 'thryve', name: 'Thryve'};
+const sep = '-';
 
 exports.rootStream = rootStream;
 
@@ -47,17 +48,17 @@ exports.thryveToPryv = function(sourceCode, data) {
     return null;
   }
 
-  const level1stream = isDaily ? { id: rootStream.id + '.daily', defaultName: 'Daily', parentId: rootStream.id } : { id: rootStream.id + '.intraday', defaultName: 'Intraday', parentId: rootStream.id };
+  const level1stream = isDaily ? { id: rootStream.id + sep + 'daily', name: 'Daily', parentId: rootStream.id } : { id: rootStream.id + sep + 'intraday', name: 'Intraday', parentId: rootStream.id };
 
   const level2Stream = {
-    id: level1stream.id + '.' + dataType.streamCode,
-    defaultName: dataType.streamName,
+    id: level1stream.id + sep + dataType.streamCode,
+    name: dataType.streamName,
     parentId: level1stream.id
   }
 
   const level3Stream = {
-    id: level1stream.id + '.' + dataType.streamCode + '.' + sourceCode,
-    defaultName: source,
+    id: level1stream.id + sep + dataType.streamCode + sep + sourceCode,
+    name: source,
     parentId: level2Stream.id
   }
 

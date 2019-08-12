@@ -17,11 +17,8 @@ app.post('/user', (req, res) => {
 
 const request = require('superagent');
 
-request.get('http://perki@localhost:8000').end();
-
-
 user.checkForupdate(1).then(res => { 
-  console.log(res);
+  console.log('checkForupdate: ' + res);
 });
 
 app.listen(port, () => console.log(`Thryve <> Pryv bridge listening on port ${port}!`))
