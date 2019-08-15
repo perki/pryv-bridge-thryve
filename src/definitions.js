@@ -1,7 +1,7 @@
 
 const logger = require('./logging');
 
-exports.sources = ["Dummy","Fitbit","Garmin","Polar","Apple","Samsung","Misfit","Withings","Thryve Connector","Thryve Wearable Connector","Strava","GoogleFit REST","Xiaomi","MyFitnessPal","Runtastic","Omron","Suunto","Oura","Runkeeper","Endomondo","iHealth","Abbott(FreeStyleLibre)","Medisana","Sleep As Android"];
+exports.sources = ["Dummy","Fitbit","Garmin","Polar","UNUSED", "Apple","Samsung","Misfit","Withings","Thryve Connector","Thryve Wearable Connector","Strava","GoogleFit REST","Xiaomi","MyFitnessPal","Runtastic","Omron","Suunto","Oura","Runkeeper","Endomondo","iHealth","Abbott(FreeStyleLibre)","Medisana","Sleep As Android"];
 
 const dataTypesCSV = ["1000;Steps;Daily;sum of steps;LONG;count/steps",
   "1000;Steps;Intraday;sum of steps (in this minute);LONG;count/steps",
