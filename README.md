@@ -64,6 +64,5 @@ Definitions on how to convert Thryve DataType to Pryv are located in definitions
 
 Copyright (C) 2019 Pierre-Mikael Legris - All Rights Reserved.  
 
-You may use, distribute and modify this code under the terms of the XYZ license, which unfortunately won't be written for another century.
-
+You may use, distribute and modify this code under the terms of the GL3 license.
 You should have received a copy of the GPL3 license with these files.
