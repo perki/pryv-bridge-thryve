@@ -1,7 +1,9 @@
 {
   "name": "pryv-bridge-thryve",
   "description": "Thyve <> Pryv bridge",
+  "author": "PM Legris | Pryv <perki -@- pryv.com>",
   "version": "0.0.1",
+  "license": "GPL-3.0",
   "engines": {
     "node": ">=8.0.0"
   },
