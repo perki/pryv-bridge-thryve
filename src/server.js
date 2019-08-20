@@ -17,7 +17,7 @@ app.post('/user', (req, res) => {
 
 app.post('/trigger', async (req, res) => {
   try { 
-    console.log(res.body);
+    console.log(req.body);
     const result = await user.handleTrigger(req.body);
     return res.status(200).send('OK');
   } catch (error) { 
