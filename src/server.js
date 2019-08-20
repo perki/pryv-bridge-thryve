@@ -13,12 +13,17 @@ app.get('/', (req, res) => res.send('Hello World!'))
 app.post('/user', (req, res) => {
   storage.addUser(req.body.pryv, req.body.thryveToken);
   res.send({result: 'OK'})
-})
+});
+
+app.post('/trigger', (req, res) => {
+  console.log(req.body);
+  res.status(500).send('Something broke!');
+});
 
 const request = require('superagent');
 
-user.checkForupdate(1).then(res => { 
+/** user.checkForupdate(1).then(res => { 
   console.log('checkForupdate: ' + res);
-});
+}); */
 
 app.listen(port, () => console.log(`Thryve <> Pryv bridge listening on port ${port}!`))

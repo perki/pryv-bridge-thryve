@@ -12,7 +12,7 @@ thryve.userInfo('664b0b69c0fb04c6881ba16eaef9c789').then(
   function (err) {
     console.log(err);
   }
-)**/
+)*/
 
 
 /**
@@ -31,7 +31,7 @@ exports.checkForupdate = async function (delay) {
     try {
 
       // get data from Thryve
-      const result = await thryve.dynamicValues(user.thryveToken, new Date(user.lastSynch), new Date(), false);
+      const result = await thryve.dynamicValues(user.thryveToken, new Date(user.lastSynch), new Date(), true);
 
       // convert to pryv model
       if (!result.body[0] || !result.body[0].dataSources) {
