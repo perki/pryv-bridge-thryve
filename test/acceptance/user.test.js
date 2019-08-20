@@ -1,12 +1,13 @@
 /*global describe, it */
-var config = require('../../src/config.js'),
+const config = require('../../src/config.js'),
   request = require('superagent');
 
 
-var should = require('should');
+const should = require('should');
 require('../../src/server');
 
-var serverBasePath = 'http://' + config.get('server:ip') + ':' + config.get('server:port');
+const serverBasePath = 'http://' + config.get('server:ip') + ':' + config.get('server:port');
+const testuser = config.get('test:users')[0];
 
 describe('user', function () {
 
@@ -17,8 +18,8 @@ describe('user', function () {
       .set('Accept-Encoding', 'gzip, deflate')
       .set('Content-Type', 'application/json')
       .send({
-        pryv: 'https://cjyyo1s1k004g0ed3fmdo22e9@pythryve.pryv.me',
-        thryveToken: 'abcd'
+        pryv: testuser.pryv,
+        thryveToken: testuser.thryveToken
       })
       .end(function (err, res) {
         should.exist(res);

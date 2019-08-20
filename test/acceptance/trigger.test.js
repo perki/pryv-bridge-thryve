@@ -1,16 +1,18 @@
 /*global describe, it */
-var config = require('../../src/config.js'),
+const config = require('../../src/config.js'),
   request = require('superagent');
 
 
-var should = require('should');
+const should = require('should');
 require('../../src/server');
 
-var serverBasePath = 'http://' + config.get('server:ip') + ':' + config.get('server:port');
+const serverBasePath = 'http://' + config.get('server:ip') + ':' + config.get('server:port');
+
+const testuser = config.get('test:users')[0];
 
 describe('trigger', function () {
 
-  it('Test', function (done) {
+  it('Trigger ', function (done) {
     request.post(serverBasePath + '/trigger')
       .set('Accept', 'application/json')
       .set('Accept-Charset', 'utf-8')
@@ -18,16 +20,16 @@ describe('trigger', function () {
       .set('Content-Type', 'application/json')
       .send({
         "sourceUpdate": {
-          "authenticationToken": "test",
+          "authenticationToken": testuser.thryveToken,
           "partnerUserID": "test",
-          "dataSource": "1",
-          "startTimestamp": "2018-01-01T00:00:00Z",
-          "endTimestamp": "2018-01-02T00:00:00Z",
-          "updateType": "DAILY"
+          "dataSource": "8",
+          "startTimestamp": "2019-08-20T11:22:00Z",
+          "endTimestamp": "2019-08-20T11:22:00Z",
+          "updateType": "MINUTE"
         }
       })
       .end(function (err, res) {
-        should.exist(err);
+        should.not.exist(err);
         done();
       });
   });
