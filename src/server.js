@@ -29,8 +29,8 @@ app.post('/trigger', async (req, res) => {
 const request = require('superagent');
 
 /** 
-user.checkForupdate(1).then(res => { 
-  console.log('checkForupdate: ' + res);
+user.checkForUpdate(1).then(res => { 
+  console.log('checkForUpdate: ' + res);
 }); 
 */
 
