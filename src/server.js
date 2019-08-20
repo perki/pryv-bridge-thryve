@@ -15,15 +15,22 @@ app.post('/user', (req, res) => {
   res.send({result: 'OK'})
 });
 
-app.post('/trigger', (req, res) => {
-  console.log(req.body);
-  res.status(500).send('Something broke!');
+app.post('/trigger', async (req, res) => {
+  try { 
+    const result = await user.handleTrigger(req.body);
+    return res.status(200).send('OK');
+  } catch (error) { 
+    console.log('Error Trigger Res: ', error);
+    res.status(500).send('Something broke!');
+  };
 });
 
 const request = require('superagent');
 
-/** user.checkForupdate(1).then(res => { 
+/** 
+user.checkForupdate(1).then(res => { 
   console.log('checkForupdate: ' + res);
-}); */
+}); 
+*/
 
 app.listen(port, () => console.log(`Thryve <> Pryv bridge listening on port ${port}!`))

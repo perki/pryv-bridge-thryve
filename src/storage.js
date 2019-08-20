@@ -10,15 +10,24 @@ const queryInsert = db.prepare('INSERT OR REPLACE INTO users (pryv, thryveToken,
 
 const queryGetFromLastSynch = db.prepare('SELECT pryv, thryveToken, lastSynch FROM users WHERE lastSynch < @since');
 
+const queryGetUserForThryveToken = db.prepare('SELECT pryv FROM users WHERE thryveToken = @thryveToken');
+
 exports.addUser = function(pryv, thryveToken) {
   queryInsert.run({ pryv: pryv, thryveToken: thryveToken, lastSynch: 0});
 }
 
 
 /**
- * @param Milliseconds delay
+ * @param {Milliseconds} delay
  */
 exports.getAllSynchedBefore = function (delay) {
   const since = Date.now() - delay;
   return queryGetFromLastSynch.all({ since: since });
+}
+
+/**
+ * @param {String} thryveToken
+ */
+exports.pryvForThryveToken = function (thryveToken) {
+  return queryGetUserForThryveToken.get({ thryveToken: thryveToken });
 }
