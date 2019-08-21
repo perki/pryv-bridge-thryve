@@ -104,7 +104,7 @@ async function thryveToPryv(pryvEndpoint, thryveToken, startDate, endDate, isDai
     const events = [];
 
     // get data from Thryve
-    const resThryve = await thryve.dynamicValues(thryveToken, startDate, endDate, true, source);
+    const resThryve = await thryve.dynamicValues(thryveToken, startDate, endDate, isDaily, source);
 
     // convert to pryv model
     if (!resThryve.body[0] || !resThryve.body[0].dataSources) {

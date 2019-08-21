@@ -8,8 +8,8 @@ db.prepare('CREATE TABLE IF NOT EXISTS sync (syncid integer primary key, userpry
 db.prepare('CREATE UNIQUE INDEX IF NOT EXISTS pryv_source ON sync(userpryv, source)').run();
 db.prepare('CREATE INDEX IF NOT EXISTS time_index ON sync(time)').run();
 
-const queryInsertUser = db.prepare('INSERT INTO users (pryvEndpoint, thryveToken) VALUES (@pryvEndpoint, @thryveToken)');
-const queryInsertSyncSourceForUser = db.prepare('INSERT INTO sync (userpryv, source) VALUES (@pryvEndpoint, @source)');
+const queryInsertUser = db.prepare('INSERT OR REPLACE INTO users (pryvEndpoint, thryveToken) VALUES (@pryvEndpoint, @thryveToken)');
+const queryInsertSyncSourceForUser = db.prepare('INSERT OR REPLACE INTO sync (userpryv, source) VALUES (@pryvEndpoint, @source)');
 
 const queryGetAllToBeSynched = db.prepare('SELECT users.pryvEndpoint, users.thryveToken, sync.source, sync.time FROM users, sync WHERE users.pryvEndpoint = sync.userpryv');
 
