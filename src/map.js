@@ -21,7 +21,7 @@ exports.thryveToPryv = function(sourceCode, data) {
 
   const source = definitions.sources[sourceCode];
   if (! source) {
-    logger.warn('Cannot find sourceCode for: ' + sourceCode);
+    logger.warn('Cannot find sourceCode for: ' + sourceCode + ' => ' + JSON.stringify(data));
     return null;
   }
 
