@@ -139,7 +139,7 @@ async function thryveToPryv(pryvEndpoint, thryveToken, startDate, endDate, isDai
 
     return {
       thryveResult: resThryve.body[0], 
-      pryvResult: resPryv.body}
+      pryvResult: resPryv}
   } catch (error) {
     logger.error('ErrorX: ', error);
   }

@@ -9,7 +9,8 @@ function extractAPIandToken(pryvEndpoint) {
   return {api: res[1] + '://' + res[3], token: res[2]}
 }
 
-exports.postStreamsAndEvents = function (pryvEndpoint, streamsAndEvents) {
+const chunkSize = 100;
+exports.postStreamsAndEvents = async function (pryvEndpoint, streamsAndEvents) {
   const batch = [];
   streamsAndEvents.streams.map(function (stream) { 
     batch.push({
@@ -26,9 +27,15 @@ exports.postStreamsAndEvents = function (pryvEndpoint, streamsAndEvents) {
   });
   // do send
   const apiAndToken = extractAPIandToken(pryvEndpoint);
-  return request.post(apiAndToken.api)
-  .set('Authorization', apiAndToken.token)
-  .send(batch);
+  const res = [];
+  while (batch.length > 0) {
+    const thisBatch = batch.splice(0, chunkSize);
+    const resRequest = await request.post(apiAndToken.api)
+      .set('Authorization', apiAndToken.token)
+      .send(thisBatch);
+    res.push(resRequest.body)
+  }
+  return res;
 }
 
 /**
