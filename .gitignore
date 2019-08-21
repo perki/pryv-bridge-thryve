@@ -1,3 +1,7 @@
 node_modules
 db.sqlite
 config.json
+logfile.log
+doc/Data-Types.xlsx
+doc/Data-Types.csv
+sample.json

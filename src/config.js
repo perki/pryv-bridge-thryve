@@ -51,7 +51,10 @@ nconf.defaults({
     userInfo: 'https://service.und-gesund.de/restjson/userInformation',
     dynamicValues: 'https://service.und-gesund.de/restjson/v2/dynamicValues',
     dailyDynamicValues: 'https://service.und-gesund.de/restjson/v2/dailyDynamicValues'
-  }
+  },
+  pryv: {
+    rootstream: { id: 'thryve', name: 'Thryve' }
+  } 
 });
 
 if (process.env.NODE_ENV === 'test') {

@@ -1,7 +1,7 @@
 const definitions = require('./definitions');
 const logger = require('./logging');
 
-const rootStream = {id: 'thryve', name: 'Thryve'};
+const rootStream = require('./config.js').get('pryv:rootstream');
 const sep = '-';
 
 exports.rootStream = rootStream;

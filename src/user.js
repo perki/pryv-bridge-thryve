@@ -16,15 +16,16 @@ thryve.userInfo('664b0b69c0fb04c6881ba16eaef9c789').then(
 
 
 /**
- * update all users with a lastSynch older that now - delay in miliseconds
+ * check all users that need to be updated
  */
-exports.checkForUpdate = async function (delay) {
-  const ulist = storage.getAllSynchedBefore(delay);
+async function checkForUpdateAll() {
+  const ulist = storage.getAllToBeSynched();
   return await Promise.all(ulist.map(async function (user) {
-    const res = await thryveToPryv(user.pryv, user.thryveToken, new Date(user.lastSynch), new Date(), true, -1);
+    const res = await thryveToPryv(user.pryvEndpoint, user.thryveToken, new Date(user.lastSynch), new Date(), true, -1);
   }));
 }
 
+exports.checkForUpdateAll = checkForUpdateAll;
 
 /**
  * handle Triggers from thryve. 
@@ -41,10 +42,10 @@ exports.handleTrigger = async function (triggerData) {
 
   const dbresult = storage.pryvForThryveToken(trigger.authenticationToken);
   logger.info('Trigger for: ', dbresult);
-  if (!dbresult.pryv) {
+  if (!dbresult || !dbresult.pryvEndpoint) {
     throw Error('Cannot find user for Trigger Token: ' + trigger.authenticationToken);
   }
-  const pryvEndpoint = dbresult.pryv;
+  const pryvEndpoint = dbresult.pryvEndpoint;
 
   if (!['DAILY', 'BOTH', 'MINUTE'].includes(trigger.updateType)) {
     throw Error('Unkonw Update Type: ' + trigger.updateType);
@@ -74,10 +75,20 @@ exports.handleTrigger = async function (triggerData) {
 }
 
 
+exports.initUser = async function (user) {
+  const lastSyncTime = await pryv.getLastSyncTime(user.pryvEndpoint);
+  logger.info('Init User ' + user.pryvEndpoint + ' with LastSynchTime: ' + new Date(lastSyncTime * 1000));
+  const dailyRes = await thryveToPryv(user.pryvEndpoint, user.thryveToken, new Date(lastSyncTime * 1000), new Date(), true, -1);
+  console.log('Init daily:', dailyRes);
+  const intraDay = await thryveToPryv(user.pryvEndpoint, user.thryveToken, new Date(lastSyncTime * 1000), new Date(), false, -1);
+  console.log('Init intra:', intraDay);
+}
+
+
 
 /**
  * 
- * @param {URL} pryv 
+ * @param {URL} pryvEndpoint
  * @param {String} thryveToken 
  * @param {Date} startDate 
  * @param {Date} endDate
@@ -122,12 +133,13 @@ async function thryveToPryv(pryvEndpoint, thryveToken, startDate, endDate, isDai
         })
       });
     });
+
     // post to pryv
     const resPryv = await pryv.postStreamsAndEvents(pryvEndpoint, { streams: streamList, events: events });
 
     return {
-      thryve: resThryve.body[0], 
-      pryv: resPryv.body}
+      thryveResult: resThryve.body[0], 
+      pryvResult: resPryv.body}
   } catch (error) {
     logger.error('ErrorX: ', error);
   }

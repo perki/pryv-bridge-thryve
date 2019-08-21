@@ -11,7 +11,8 @@ const port = config.get('server:port')
 app.get('/', (req, res) => res.send('Hello World!'))
 
 app.post('/user', (req, res) => {
-  storage.addUser(req.body.pryv, req.body.thryveToken);
+  storage.addUser(req.body.pryvEndpoint, req.body.thryveToken);
+  user.initUser({ pryvEndpoint: req.body.pryvEndpoint, thryveToken: req.body.thryveToken});
   res.send({result: 'OK'})
 });
 
@@ -28,10 +29,14 @@ app.post('/trigger', async (req, res) => {
 
 const request = require('superagent');
 
-/** 
-user.checkForUpdate(1).then(res => { 
-  console.log('checkForUpdate: ' + res);
-}); 
-*/
+app.post('/auto', async (req, res) => { 
+  try { 
+    storage.addSyncSourceForuser(req.body.pryvEndpoint, req.body.source);
+    res.status(200).send('OK');
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+});
+ 
 
 app.listen(port, () => console.log(`Thryve <> Pryv bridge listening on port ${port}!`))

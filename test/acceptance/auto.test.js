@@ -7,25 +7,23 @@ const should = require('should');
 require('../../src/server');
 
 const serverBasePath = 'http://' + config.get('server:ip') + ':' + config.get('server:port');
+
 const testuser = config.get('test:users')[0];
 
-describe('User', function () {
+describe('Auto', function () {
 
-  it('Create', function (done) {
-    request.post(serverBasePath + '/user')
+  it('Create ', function (done) {
+    request.post(serverBasePath + '/auto')
       .set('Accept', 'application/json')
       .set('Accept-Charset', 'utf-8')
       .set('Accept-Encoding', 'gzip, deflate')
       .set('Content-Type', 'application/json')
       .send({
-        pryvEndpoint: testuser.pryvEndpoint,
-        thryveToken: testuser.thryveToken
+          "pryvEndpoint": testuser.pryvEndpoint,
+          "source": 5
       })
       .end(function (err, res) {
-        should.exist(res);
-        should.exist(res.body.result);
-        should.equal(res.body.result,'OK');
-        res.status.should.equal(200);
+        should.not.exist(err);
         done();
       });
   });
