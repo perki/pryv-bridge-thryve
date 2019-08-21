@@ -23,8 +23,8 @@ describe('trigger', function () {
           "authenticationToken": testuser.thryveToken,
           "partnerUserID": "test",
           "dataSource": "8",
-          "startTimestamp": "2019-08-20T11:22:00Z",
-          "endTimestamp": "2019-08-20T11:22:00Z",
+          "startTimestamp": "2019-08-21T21:17:00Z",
+          "endTimestamp": "2019-08-21T21:17:00Z",
           "updateType": "MINUTE"
         }
       })
