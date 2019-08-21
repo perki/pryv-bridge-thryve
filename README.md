@@ -13,9 +13,18 @@ Exploratory work for bridge between Pryv API and Thryve API.
   "thryve": {
     "auth": {"user": "...", "password": "..."},
     "appId": "..."
+  },
+  "test": {
+    "users": [{
+      "thryveToken" : "{thryvToken}",
+      "pryv": "https://{pryvtoken}@{pryvuser}.{domain}"
+      }
+    ]
   }
 }
 ```
+
+Optionaly you can add your own user to run tests
 
 ## API
 
@@ -28,7 +37,7 @@ Content:
 ```json
 {
   "pryv": "https://{pryvtoken}@{pryvuser}.{domain}",
-  "thryveToken": "{thryvToken}"
+  "thryveToken": "{thryvToken}",
 }
 ```
 
@@ -37,6 +46,8 @@ Content:
 `npm start`
 
 ## Test
+
+Complete the config.json with a valid Pryv endpoint and Thryve token
 
 `npm test`
 
