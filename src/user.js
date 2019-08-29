@@ -139,6 +139,7 @@ async function thryveToPryv(pryvEndpoint, thryveToken, startDate, endDate, isDai
 
     return {
       thryveResult: resThryve.body[0], 
+      pryvRequest: { streams: streamList, events: events },
       pryvResult: resPryv}
   } catch (error) {
     logger.error('ErrorX: ', error);
