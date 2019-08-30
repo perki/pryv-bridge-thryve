@@ -48,7 +48,7 @@ exports.handleTrigger = async function (triggerData) {
   const pryvEndpoint = dbresult.pryvEndpoint;
 
   if (!['DAILY', 'BOTH', 'MINUTE'].includes(trigger.updateType)) {
-    throw Error('Unkonw Update Type: ' + trigger.updateType);
+    throw Error('Unkonw Update Type: ' + trigger.updateType, 'TriggerData: ' + JSON.stringify(triggerData));
   }
 
   try {
@@ -59,7 +59,7 @@ exports.handleTrigger = async function (triggerData) {
         new Date(trigger.endTimestamp),
         true, trigger.dataSource);
 
-      console.log('Trigger Daily: ', JSON.stringify(resultDaily));
+      logger.info('Trigger Daily: ' + JSON.stringify(resultDaily));
     }
 
     if (['MINUTE', 'BOTH'].includes(trigger.updateType)) {
@@ -67,7 +67,7 @@ exports.handleTrigger = async function (triggerData) {
         new Date(trigger.startTimestamp),
         new Date(trigger.endTimestamp),
         false, trigger.dataSource);
-      console.log('Trigger Minutes: ', JSON.stringify(resultMinute));
+      logger.info('Trigger Minutes: ' + JSON.stringify(resultMinute));
     }
   } catch (error) {
 
@@ -79,9 +79,9 @@ exports.initUser = async function (user) {
   const lastSyncTime = await pryv.getLastSyncTime(user.pryvEndpoint);
   logger.info('Init User ' + user.pryvEndpoint + ' with LastSynchTime: ' + new Date(lastSyncTime * 1000));
   const dailyRes = await thryveToPryv(user.pryvEndpoint, user.thryveToken, new Date(lastSyncTime * 1000), new Date(), true, -1);
-  console.log('Init daily:', dailyRes);
+  logger.info('Init daily:' + dailyRes);
   const intraDay = await thryveToPryv(user.pryvEndpoint, user.thryveToken, new Date(lastSyncTime * 1000), new Date(), false, -1);
-  console.log('Init intra:', intraDay);
+  logger.info('Init intra:' + intraDay);
 }
 
 
@@ -139,7 +139,7 @@ async function thryveToPryv(pryvEndpoint, thryveToken, startDate, endDate, isDai
 
     return {
       thryveResult: resThryve.body[0], 
-      pryvRequest: { streams: streamList, events: events },
+      //pryvRequest: { streams: streamList, events: events },
       pryvResult: resPryv}
   } catch (error) {
     logger.error('ErrorX: ', error);
