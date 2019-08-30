@@ -77,11 +77,11 @@ exports.handleTrigger = async function (triggerData) {
 
 exports.initUser = async function (user) {
   const lastSyncTime = await pryv.getLastSyncTime(user.pryvEndpoint);
-  logger.info('Init User ' + user.pryvEndpoint + ' with LastSynchTime: ' + new Date(lastSyncTime * 1000));
+  logger.info('Init User: ' + user.pryvEndpoint + ' with LastSynchTime: ' + new Date(lastSyncTime * 1000));
   const dailyRes = await thryveToPryv(user.pryvEndpoint, user.thryveToken, new Date(lastSyncTime * 1000), new Date(), true, -1);
-  logger.info('Init daily:' + dailyRes);
+  logger.info('Init daily: ' + JSON.stringify(dailyRes));
   const intraDay = await thryveToPryv(user.pryvEndpoint, user.thryveToken, new Date(lastSyncTime * 1000), new Date(), false, -1);
-  logger.info('Init intra:' + intraDay);
+  logger.info('Init intra: ' + JSON.stringify(intraDay));
 }
 
 
