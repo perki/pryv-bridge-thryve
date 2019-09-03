@@ -7,7 +7,7 @@ const should = require('should');
 require('../../src/server');
 
 const serverBasePath = 'http://' + config.get('server:ip') + ':' + config.get('server:port');
-const testuser = config.get('test:users')[0];
+const testuser = config.get('test:users')[1];
 
 describe('User', function () {
 

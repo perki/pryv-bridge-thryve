@@ -109,9 +109,10 @@ async function fetchFromThryveToPryv(pryvEndpoint, thryveToken, startDate, endDa
     const streamMap = {};
     const events = [];
 
+  let resThryve = null;
   try {
     // get data from Thryve
-    const resThryve = await thryve.dynamicValues(thryveToken, startDate, endDate, isDaily, source);
+     resThryve = await thryve.dynamicValues(thryveToken, startDate, endDate, isDaily, source);
 
   } catch (error) {
     logger.error('ErrorX: ', error);
@@ -149,9 +150,10 @@ async function fetchFromThryveToPryv(pryvEndpoint, thryveToken, startDate, endDa
   
   logger.info('Remaining combinaisons: ' + JSON.stringify(context.combinaisons));
 
+  let resPryv = null;
   try { 
   // post to pryv
-  const resPryv = await pryv.postStreamsAndEvents(pryvEndpoint, { streams: streamList, events: events });
+    resPryv = await pryv.postStreamsAndEvents(pryvEndpoint, { streams: streamList, events: events });
   } catch (error) {
     logger.error('ErrorY: ', error);
     throw new Error('Error while connecting to Pryv');
