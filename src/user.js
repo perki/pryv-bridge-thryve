@@ -47,8 +47,14 @@ exports.handleTrigger = async function (triggerData) {
   }
   const pryvEndpoint = dbresult.pryvEndpoint;
 
-  if (!['DAILY', 'BOTH', 'MINUTE'].includes(trigger.updateType)) {
-    throw Error('Unkonw Update Type: ' + trigger.updateType, 'TriggerData: ' + JSON.stringify(triggerData));
+  if (!['DAILY', 'BOTH', 'MINUTE', 'NEW'].includes(trigger.updateType)) {
+    logger.warn('Trigger, unkonw type: ' + trigger.updateType + ' TriggerData: ' + JSON.stringify(triggerData));
+    return; 
+  }
+
+  if (['NEW'].includes(trigger.updateType)) {
+    logger.info('Trigger declares new source [' + trigger.dataSource + '] for: ' + trigger.sourceUpdate );
+    return; 
   }
 
   try {
