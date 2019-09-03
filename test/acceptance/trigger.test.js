@@ -36,7 +36,7 @@ describe('trigger', function () {
 
 
   it('Trigger Apple', function (done) {
-    this.timeout(600000); 
+    this.timeout(20000);
     request.post(serverBasePath + '/trigger')
       .set('Accept', 'application/json')
       .set('Accept-Charset', 'utf-8')
@@ -48,7 +48,7 @@ describe('trigger', function () {
           "partnerUserID": "test",
           "dataSource": "9",
           "startTimestamp": "2019-08-14T16:43:00Z",
-          "endTimestamp": "2020-08-21T21:17:00Z",
+          "endTimestamp": "2019-08-21T21:17:00Z",
           "updateType": "MINUTE"
         }
       })

@@ -57,7 +57,7 @@ Node.js Express APP.
 
 Stores Pryv-user // Thryve Token in a local sqlite Database
 
-Definitions on how to convert Thryve DataType to Pryv are located in definitions.js file.
+Definitions on how to convert Thryve DataType to Pryv are located in schemaConverters/definitions.js file.
 
 ## Todo
 

@@ -1,6 +1,6 @@
 
 
-const logger = require('./logging');
+const logger = require('../logging');
 
 exports.sources = ["Dummy","Fitbit","Garmin","Polar","UNUSED", "Apple","Samsung","Misfit","Withings","Thryve Connector","Thryve Wearable Connector","Strava","GoogleFit REST","Xiaomi","MyFitnessPal","Runtastic","Omron","Suunto","Oura","Runkeeper","Endomondo","iHealth","Abbott(FreeStyleLibre)","Medisana","Sleep As Android"];
 
@@ -48,7 +48,7 @@ const dataTypesCSV = ["1000;Steps;Daily;sum of steps;LONG;count/steps",
   "1118;TransportDuration;Daily;sum of minutes spent in car or transport vehicle;LONG;time/min",
   "1118;TransportBinary;Intraday;transport detected (in this minute);NONE;activity/plain",
   "1119;SittingBinary;Intraday;sitting detected (in this minute);NONE;activity/plain",
-  "1200;ActivityType;Intraday;ID of the broad activity category;ACT-1;todo",
+  "1200;ActivityType;Intraday;ID of the broad activity category;ACT-1;ignore",
   "1201;ActivityTypeDetail1;Intraday;ID of the specific activity category;LONG;todo",
   "1202;ActivityTypeDetail2;Intraday;ID of the very specific activity category;LONG;todo",
   "1401;GeolocationLatitude;Intraday;ZZZ;LONG;combine:Geolocation:position/wgs84:latitude",
@@ -202,6 +202,19 @@ const converters = {
     // TODO
   }
 }
+
+const detailedCodes = {
+  'x1200': {
+    'i102': 'Sleep',
+    'i103': 'Doffed',
+    'i104': 'Active',
+    'i105': 'Walk',
+    'i106': 'Run',
+    'i107': 'Bike',
+    'i106': 'Transport'
+  }
+}
+
 
 
 const dataTypes = {};

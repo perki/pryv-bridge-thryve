@@ -1,7 +1,7 @@
 const thryve = require('./thryve.js');
 const pryv = require('./pryv.js');
 const storage = require('./storage.js');
-const mapData = require('./map.js');
+const schemaConverter = require('./schemaConverter');
 const logger = require('./logging.js');
 
 /** 
@@ -20,7 +20,6 @@ thryve.userInfo('664b0b69c0fb04c6881ba16eaef9c789').then(
  */
 async function checkForUpdateAll() {
   const ulist = storage.getAllToBeSynched();
-  const combinaisons = {};
   return await Promise.all(ulist.map(async function (user) {
     const res = await fetchFromThryveToPryv(user.pryvEndpoint, user.thryveToken, new Date(user.lastSynch), new Date(), true, -1);
   }));
@@ -118,7 +117,7 @@ async function fetchFromThryveToPryv(pryvEndpoint, thryveToken, startDate, endDa
       throw new Error('Invalid body response: ' + result.body);
     }
 
-    const combinaisons = {};
+    const context = { combinaisons : {} };
     resThryve.body[0].dataSources.map(function (dataSource) {
       if (!dataSource) {
         throw new Error('Invalid datasource content: ' + resThryve.body[0]);
@@ -131,7 +130,7 @@ async function fetchFromThryveToPryv(pryvEndpoint, thryveToken, startDate, endDa
       }
 
       dataSource.data.map(function (data) {
-        const res = mapData.thryveToPryv(dataSource.dataSource, data, combinaisons);
+        const res = schemaConverter.thryveToPryv(dataSource.dataSource, data, context);
         if (!res) return;
         events.push(res.event);
         res.streams.map(function (stream) {
@@ -141,16 +140,19 @@ async function fetchFromThryveToPryv(pryvEndpoint, thryveToken, startDate, endDa
         })
       });
     });
-    logger.info('Remaining combinaisons', JSON.stringify(combinaisons));
+    logger.info('Remaining combinaisons' + JSON.stringify(context.combinaisons));
 
     // post to pryv
     const resPryv = await pryv.postStreamsAndEvents(pryvEndpoint, { streams: streamList, events: events });
 
 
     return {
-      thryveResult: resThryve.body[0], 
-      pryvRequest: { streams: streamList, events: events },
-      pryvResult: resPryv}
+      counters: context.counters,
+      eventsCounts: events.length,
+      //thryveResult: resThryve.body[0], 
+      //pryvRequest: { streams: streamList, events: events },
+      //pryvResult: resPryv
+    }
   } catch (error) {
     logger.error('ErrorX: ', error);
   }
