@@ -35,7 +35,7 @@ exports.dynamicValues = function(authenticationToken, start, stop, daily, source
   const sourceStr = (source >= 0) ? ('&dataSource=' + source) : '';
   const url = daily ? thryveAPI.dailyDynamicValues : thryveAPI.dynamicValues;
   const params = 'startTimestamp=' + start.toISOString().split('.')[0] + 'Z&' +
-    'endTimestamp=' + stop.toISOString().split('.')[0] + 'Z' + sourceStr + '&valueTypes=1401,1402';
+    'endTimestamp=' + stop.toISOString().split('.')[0] + 'Z' + sourceStr ; // + '&valueTypes=1401,1402';
   console.log(url, params);
   return post(url, authenticationToken)
     .send(params);

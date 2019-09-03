@@ -103,58 +103,66 @@ exports.initUser = async function (user) {
  */
 async function fetchFromThryveToPryv(pryvEndpoint, thryveToken, startDate, endDate, isDaily, source) {
 
-  try {
+ 
 
     const streamList = [];
     const streamMap = {};
     const events = [];
 
+  try {
     // get data from Thryve
     const resThryve = await thryve.dynamicValues(thryveToken, startDate, endDate, isDaily, source);
 
-    // convert to pryv model
-    if (!resThryve.body[0] || !resThryve.body[0].dataSources) {
-      throw new Error('Invalid body response: ' + result.body);
-    }
-
-    const context = { combinaisons : {} };
-    resThryve.body[0].dataSources.map(function (dataSource) {
-      if (!dataSource) {
-        throw new Error('Invalid datasource content: ' + resThryve.body[0]);
-      }
-      if (typeof dataSource.dataSource === undefined) {
-        throw new Error('Invalid datasource content: ' + dataSource);
-      }
-      if (!dataSource.data) {
-        throw new Error('Invalid datasource content: ' + dataSource);
-      }
-
-      dataSource.data.map(function (data) {
-        const res = schemaConverter.thryveToPryv(dataSource.dataSource, data, context);
-        if (!res) return;
-        events.push(res.event);
-        res.streams.map(function (stream) {
-          if (streamMap[stream.id]) return;
-          streamList.push(stream);
-          streamMap[stream.id] = stream;
-        })
-      });
-    });
-   
-    logger.info('Remaining combinaisons: ' + JSON.stringify(context.combinaisons));
-
-    // post to pryv
-    const resPryv = await pryv.postStreamsAndEvents(pryvEndpoint, { streams: streamList, events: events });
-
-
-    return {
-      counters: context.counters,
-      eventsCounts: events.length,
-      //thryveResult: resThryve.body[0], 
-      //pryvRequest: { streams: streamList, events: events },
-      //pryvResult: resPryv
-    }
   } catch (error) {
     logger.error('ErrorX: ', error);
+    throw new Error('Error while connecting to Thryve');
   }
+
+  // convert to pryv model
+  if (!resThryve.body[0] || !resThryve.body[0].dataSources) {
+    throw new Error('Invalid body response: ' + resThryve.body);
+  }
+
+  const context = { combinaisons : {} };
+  resThryve.body[0].dataSources.map(function (dataSource) {
+    if (!dataSource) {
+      throw new Error('Invalid datasource content: ' + resThryve.body[0]);
+    }
+    if (typeof dataSource.dataSource === undefined) {
+      throw new Error('Invalid datasource content: ' + dataSource);
+    }
+    if (!dataSource.data) {
+      throw new Error('Invalid datasource content: ' + dataSource);
+    }
+
+    dataSource.data.map(function (data) {
+      const res = schemaConverter.thryveToPryv(dataSource.dataSource, data, context);
+      if (!res) return;
+      events.push(res.event);
+      res.streams.map(function (stream) {
+        if (streamMap[stream.id]) return;
+        streamList.push(stream);
+        streamMap[stream.id] = stream;
+      })
+    });
+  });
+  
+  logger.info('Remaining combinaisons: ' + JSON.stringify(context.combinaisons));
+
+  try { 
+  // post to pryv
+  const resPryv = await pryv.postStreamsAndEvents(pryvEndpoint, { streams: streamList, events: events });
+  } catch (error) {
+    logger.error('ErrorY: ', error);
+    throw new Error('Error while connecting to Pryv');
+  }
+
+  return {
+    counters: context.counters,
+    eventsCounts: events.length,
+    //thryveResult: resThryve.body[0], 
+    //pryvRequest: { streams: streamList, events: events },
+    //pryvResult: resPryv
+  }
+ 
 }
