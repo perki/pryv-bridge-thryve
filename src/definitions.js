@@ -48,11 +48,11 @@ const dataTypesCSV = ["1000;Steps;Daily;sum of steps;LONG;count/steps",
   "1118;TransportDuration;Daily;sum of minutes spent in car or transport vehicle;LONG;time/min",
   "1118;TransportBinary;Intraday;transport detected (in this minute);NONE;activity/plain",
   "1119;SittingBinary;Intraday;sitting detected (in this minute);NONE;activity/plain",
-  "1200;ActivityType;Intraday;ID of the broad activity category;ACT-1;ignore",
+  "1200;ActivityType;Intraday;ID of the broad activity category;ACT-1;todo",
   "1201;ActivityTypeDetail1;Intraday;ID of the specific activity category;LONG;todo",
   "1202;ActivityTypeDetail2;Intraday;ID of the very specific activity category;LONG;todo",
-  "1401;GeolocationLatitude;Intraday;ZZZ;LONG;ignore",
-  "1402;GeolocationLongitude;Intraday;ZZZ;LONG;ignore",
+  "1401;GeolocationLatitude;Intraday;ZZZ;LONG;combine:Geolocation:position/wgs84:latitude",
+  "1402;GeolocationLongitude;Intraday;ZZZ;LONG;combine:Geolocation:position/wgs84:longitude",
   "1501;UnsteadyHighActivity;Daily;list of times at which the user is most likely to act on activity promotion messages;STRING;todo",
   "2000;SleepDuration;Daily;overall sleep duration without wake times in minutes;LONG;time/min",
   "2000;SleepStateBinary;Intraday;sleep detected (in this minute);BOOLEAN;activity/plain",
@@ -201,8 +201,8 @@ const converters = {
   'ACT-1': function (data) {
     // TODO
   }
-
 }
+
 
 const dataTypes = {};
 dataTypesCSV.map(function(line) {
@@ -225,10 +225,23 @@ dataTypesCSV.map(function(line) {
     return;
   }
 
+  let type = sline[5];
+  if (sline[5].startsWith('combine')) {
+    const combine = sline[5].split(':');
+
+    type = { 
+      isCombined: true, 
+      type: combine[2], 
+      streamName: toName(combine[1]),
+      streamCode: toSnake(combine[1]),
+      contentKey: combine[3]
+    } 
+  }
+
   dataTypes[hcode + sline[0]] = {
     streamCode: toSnake(sline[1]),
     streamName: toName(sline[1]),
-    type: sline[5],
+    type: type,
     converter: converter
   }
 

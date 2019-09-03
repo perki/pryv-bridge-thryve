@@ -11,10 +11,14 @@ exports.rootStream = rootStream;
  * 
  * @param {Integer} sourceCode Thryve Data Source code
  * @param {Object} data Data as per Thryve API
+ * @param {Object} combinaisons Map {streamCode}-{type}-{time} -> {Event} 
  * 
  * @return {Object} {streams: Array of streams, event: Pryv event}
  */
-exports.thryveToPryv = function(sourceCode, data) {
+exports.thryveToPryv = function(sourceCode, data, combinaisons) {
+  if (! combinaisons) {
+    throw new Error('Missing combinaisons map');
+  }
 
   let isDaily = false;
   if (data.day) { isDaily = true; }
@@ -48,25 +52,52 @@ exports.thryveToPryv = function(sourceCode, data) {
     return null;
   }
 
+
+  const time = Date.parse(data[isDaily ? 'day' : 'timestamp']) / 1000;
+
+  let dataStreamCode = dataType.streamCode;
+  let dataStreamName = dataType.streamName;
+  let content = dataType.converter(data);
+  let eventType = '' + dataType.type;
+
+  if (dataType.type.isCombined) {
+    const combineKey = dataType.type.streamCode + '-' + dataType.type.type + '-' + time;
+    if (! combinaisons[combineKey]) { // does not exists .. add to combinaisons map and skip 
+      combinaisons[combineKey] = { content: {} };
+      //console.log(JSON.stringify(combinaisons));
+      combinaisons[combineKey].content[dataType.type.contentKey] = content;
+      return null;
+    } 
+    //console.log('2nd', combinaisons[combineKey], dataType.type.contentKey, content);
+    eventType = dataType.type.type;
+    combinaisons[combineKey].content[dataType.type.contentKey] = content;
+    content = combinaisons[combineKey].content;
+    //console.log('zzzzz', content);
+    dataStreamCode = dataType.type.streamCode;
+    dataStreamName = dataType.type.streamName;
+    delete combinaisons[combineKey];
+    
+  }  
+
   const level1stream = isDaily ? { id: rootStream.id + sep + 'daily', name: 'Daily', parentId: rootStream.id } : { id: rootStream.id + sep + 'intraday', name: 'Intraday', parentId: rootStream.id };
 
   const level2Stream = {
-    id: level1stream.id + sep + dataType.streamCode,
-    name: dataType.streamName,
+    id: level1stream.id + sep + dataStreamCode,
+    name: dataStreamName,
     parentId: level1stream.id
   }
 
   const level3Stream = {
-    id: level1stream.id + sep + dataType.streamCode + sep + sourceCode,
+    id: level1stream.id + sep + dataStreamCode + sep + sourceCode,
     name: source,
     parentId: level2Stream.id
   }
 
   const event = { 
     streamId: level3Stream.id,
-    type: dataType.type,
-    time: Date.parse(data[isDaily ? 'day' : 'timestamp']) / 1000,
-    content: dataType.converter(data)
+    type: eventType,
+    time: time,
+    content: content
   }
 
 
