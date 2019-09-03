@@ -76,7 +76,7 @@ exports.handleTrigger = async function (triggerData) {
       logger.info('Trigger Minutes: ' + JSON.stringify(resultMinute));
     }
   } catch (error) {
-
+    throw error;
   }
 }
 
@@ -140,7 +140,8 @@ async function fetchFromThryveToPryv(pryvEndpoint, thryveToken, startDate, endDa
         })
       });
     });
-    logger.info('Remaining combinaisons' + JSON.stringify(context.combinaisons));
+   
+    logger.info('Remaining combinaisons: ' + JSON.stringify(context.combinaisons));
 
     // post to pryv
     const resPryv = await pryv.postStreamsAndEvents(pryvEndpoint, { streams: streamList, events: events });

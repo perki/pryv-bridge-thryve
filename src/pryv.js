@@ -33,7 +33,7 @@ exports.postStreamsAndEvents = async function (pryvEndpoint, streamsAndEvents) {
       .set('Authorization', apiAndToken.token)
       .send(thisBatch);
     res.push(resRequest.body)
-    console.log(batch.length);
+    //console.log(batch.length);
   }
   return res;
 }
