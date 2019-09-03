@@ -48,13 +48,13 @@ exports.handleTrigger = async function (triggerData) {
   }
   const pryvEndpoint = dbresult.pryvEndpoint;
 
-  if (!['DAILY', 'BOTH', 'MINUTE', 'NEW'].includes(trigger.updateType)) {
+  if (!['DAILY', 'BOTH', 'MINUTE', 'NEW', 'DELETED'].includes(trigger.updateType)) {
     logger.warn('Trigger, unkonw type: ' + trigger.updateType + ' TriggerData: ' + JSON.stringify(triggerData));
     return; 
   }
 
-  if (['NEW'].includes(trigger.updateType)) {
-    logger.info('Trigger declares new source [' + trigger.dataSource + '] for: ' + trigger.sourceUpdate );
+  if (['NEW', 'DELETED'].includes(trigger.updateType)) {
+    logger.info('Trigger declares ' + trigger.updateType + ' source [' + trigger.dataSource + '] for: ' + trigger.sourceUpdate );
     return; 
   }
 
