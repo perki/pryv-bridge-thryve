@@ -17,7 +17,7 @@ Exploratory work for bridge between Pryv API and Thryve API.
   "test": {
     "users": [{
       "thryveToken" : "{thryvToken}",
-      "pryv": "https://{pryvtoken}@{pryvuser}.{domain}"
+      "pryvEndpoint": "https://{pryvtoken}@{pryvuser}.{domain}"
       }
     ]
   }
@@ -39,6 +39,15 @@ Content:
   "pryv": "https://{pryvtoken}@{pryvuser}.{domain}",
   "thryveToken": "{thryvToken}",
 }
+```
+
+**Important**: The pryvToken should have the necessary credentials to create events and streams in a stream with the id: `thryve`
+This stream can be configured by adding in config.json:
+
+```json
+"pryv": {
+    "rootstream": { "id": "thryve", "name": "Thryve" }
+} 
 ```
 
 

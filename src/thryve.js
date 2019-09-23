@@ -31,8 +31,8 @@ exports.userInfo = function(authenticationToken) {
  * @param {Date} stop
  * @param {Boolean} daily if true get Daily values, false to receive intraday
  */
-exports.dynamicValues = function(authenticationToken, start, stop, daily, source) {
-  const sourceStr = (source >= 0) ? ('&dataSource=' + source) : '';
+exports.dynamicValues = function(authenticationToken, start, stop, daily, thryveSourceCode) {
+  const sourceStr = (thryveSourceCode >= 0) ? ('&dataSource=' + thryveSourceCode) : '';
   const url = daily ? thryveAPI.dailyDynamicValues : thryveAPI.dynamicValues;
   const params = 'startTimestamp=' + start.toISOString().split('.')[0] + 'Z&' +
     'endTimestamp=' + stop.toISOString().split('.')[0] + 'Z' + sourceStr ; // + '&valueTypes=1401,1402';

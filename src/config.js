@@ -1,8 +1,8 @@
 // Dependencies
 
-var logger = require('./logging');
-var fs = require('fs');
-var nconf = require('nconf');
+const logger = require('./logging');
+const fs = require('fs');
+const nconf = require('nconf');
 
 // Exports
 
@@ -17,7 +17,7 @@ nconf.argv()
   .env();
 
 // default config file
-var  configFile = './config.json';
+let configFile = './config.json';
 
 /// /3. A file located at ..
 if (typeof(nconf.get('config')) !== 'undefined') {
@@ -56,7 +56,3 @@ nconf.defaults({
     rootstream: { id: 'thryve', name: 'Thryve' }
   } 
 });
-
-if (process.env.NODE_ENV === 'test') {
-  // add test config here
-}

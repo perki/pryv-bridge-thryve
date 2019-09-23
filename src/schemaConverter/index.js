@@ -9,7 +9,12 @@ exports.rootStream = rootStream;
 
 // --------    ACTIVE CONVERTER PART --------- //
 
-
+/**
+ * Counter Tool for reporting 
+ * @param {String} counterKey Message
+ * @param {What} key identifier 
+ * @param {Object} context 
+ */
 function plusOneFor(counterKey, key, context) {
   if (!context.counters) context.counters = {};
   if (!context.counters[counterKey]) context.counters[counterKey] = {};
@@ -76,6 +81,7 @@ exports.thryveToPryv = function(sourceCode, data, context) {
   let content = dataType.converter(data);
   let eventType = '' + dataType.type;
 
+  // This code is only valid for combinaision with 2 items in the content
   if (dataType.type.isCombined) {
     const combineKey = dataType.type.streamCode + '-' + dataType.type.type + '-' + time;
     if (! context.combinaisons[combineKey]) { // does not exists .. add to combinaisons map and skip 

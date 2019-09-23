@@ -4,17 +4,6 @@ const storage = require('./storage.js');
 const schemaConverter = require('./schemaConverter');
 const logger = require('./logging.js');
 
-/**
- * check all users that need to be updated
- */
-async function checkForUpdateAll() {
-  const ulist = storage.getAllToBeSynched();
-  return await Promise.all(ulist.map(async function (user) {
-    const res = await fetchFromThryveToPryv(user.pryvEndpoint, user.thryveToken, new Date(user.lastSynch), new Date(), true, -1);
-  }));
-}
-
-exports.checkForUpdateAll = checkForUpdateAll;
 
 /**
  * handle Triggers from thryve. 
@@ -164,3 +153,18 @@ async function fetchFromThryveToPryv(pryvEndpoint, thryveToken, startDate, endDa
   }
  
 }
+
+
+
+/**
+ * check all users that need to be updated
+ * Known to be BOGUS  and UNFINISHED
+ */
+async function checkForUpdateAll() {
+  const ulist = storage.getAllToBeSynched();
+  return await Promise.all(ulist.map(async function (user) {
+    const res = await fetchFromThryveToPryv(user.pryvEndpoint, user.thryveToken, new Date(user.lastSynch), new Date(), true, -1);
+  }));
+}
+
+exports.checkForUpdateAll = checkForUpdateAll;

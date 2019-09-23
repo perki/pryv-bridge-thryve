@@ -1,7 +1,8 @@
 const request = require('superagent');
 const rootStream = require('./config.js').get('pryv:rootstream');
 
-const regexAPIandToken = /(.*):\/\/(.*)@(.*)/gm;
+// This should be removed as soon as Pryv API version >= 1.4.16 
+const regexAPIandToken = /(.+):\/\/(.+)@(.+)/gm;
 function extractAPIandToken(pryvEndpoint) {
   regexAPIandToken.lastIndex = 0;
   const res = regexAPIandToken.exec(pryvEndpoint);
