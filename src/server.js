@@ -10,12 +10,18 @@ const port = config.get('server:port')
 
 app.get('/', (req, res) => res.send('Hello World!'))
 
+/**
+ * Create a User
+ */
 app.post('/user', (req, res) => {
   storage.addUser(req.body.pryvEndpoint, req.body.thryveToken);
   user.initUser({ pryvEndpoint: req.body.pryvEndpoint, thryveToken: req.body.thryveToken});
   res.send({result: 'OK'})
 });
 
+/**
+ * Handle EventTrigger from Thryve backend
+ */
 app.post('/trigger', async (req, res) => {
   try { 
     const result = await user.handleTrigger(req.body);
@@ -26,8 +32,9 @@ app.post('/trigger', async (req, res) => {
   };
 });
 
-const request = require('superagent');
-
+/**
+ * Not used yet
+ */
 app.post('/auto', async (req, res) => { 
   try { 
     storage.addSyncSourceForuser(req.body.pryvEndpoint, req.body.source);

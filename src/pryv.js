@@ -32,7 +32,7 @@ exports.postStreamsAndEvents = async function (pryvEndpoint, streamsAndEvents) {
     const resRequest = await request.post(apiAndToken.api)
       .set('Authorization', apiAndToken.token)
       .send(thisBatch);
-    res.push(resRequest.body)
+    res.push(resRequest.body);
     //console.log(batch.length);
   }
   return res;

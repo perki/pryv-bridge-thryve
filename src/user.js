@@ -4,17 +4,6 @@ const storage = require('./storage.js');
 const schemaConverter = require('./schemaConverter');
 const logger = require('./logging.js');
 
-/** 
-thryve.userInfo('664b0b69c0fb04c6881ba16eaef9c789').then(
-  function (res) {
-    console.log(res.body);
-  },
-  function (err) {
-    console.log(err);
-  }
-)*/
-
-
 /**
  * check all users that need to be updated
  */
@@ -80,31 +69,38 @@ exports.handleTrigger = async function (triggerData) {
   }
 }
 
-
+/**
+ * Fetch all data created on Thryve since last synch with Pryv
+ * ! running this could miss some data points that would have been added after 
+ * the last synchronization and with a timestamp in the past relatively to the 
+ * earliest measure.
+ */
 exports.initUser = async function (user) {
   const lastSyncTime = await pryv.getLastSyncTime(user.pryvEndpoint);
-  logger.info('Init User: ' + user.pryvEndpoint + ' with LastSynchTime: ' + new Date(lastSyncTime * 1000));
-  const dailyRes = await fetchFromThryveToPryv(user.pryvEndpoint, user.thryveToken, new Date(lastSyncTime * 1000), new Date(), true, -1);
+  const lastSyncDate = new Date(lastSyncTime * 1000);
+  const now = new Date();
+  logger.info('Init User: ' + user.pryvEndpoint + ' with LastSynchTime: ' + lastSyncDate);
+  const dailyRes = await fetchFromThryveToPryv(user.pryvEndpoint, user.thryveToken, lastSyncDate, now, true, -1);
   logger.info('Init daily: ' + JSON.stringify(dailyRes));
-  const intraDay = await fetchFromThryveToPryv(user.pryvEndpoint, user.thryveToken, new Date(lastSyncTime * 1000), new Date(), false, -1);
+  const intraDay = await fetchFromThryveToPryv(user.pryvEndpoint, user.thryveToken, lastSyncDate, now, false, -1);
   logger.info('Init intra: ' + JSON.stringify(intraDay));
 }
 
 
 
 /**
+ * Does as per the name of the function.
+ * 
+ * Fecth data from Thryve and send it to Thryve
  * 
  * @param {URL} pryvEndpoint
  * @param {String} thryveToken 
  * @param {Date} startDate 
  * @param {Date} endDate
  * @param {Boolean} isDaily true for daily, false for intraday
- * @param {Int} source negative for all
+ * @param {Int} tryveSourceCode Thryve SourceCode negative for all
  */
-async function fetchFromThryveToPryv(pryvEndpoint, thryveToken, startDate, endDate, isDaily, source) {
-
- 
-
+async function fetchFromThryveToPryv(pryvEndpoint, thryveToken, startDate, endDate, isDaily, tryveSourceCode) {
     const streamList = [];
     const streamMap = {};
     const events = [];
@@ -112,7 +108,7 @@ async function fetchFromThryveToPryv(pryvEndpoint, thryveToken, startDate, endDa
   let resThryve = null;
   try {
     // get data from Thryve
-     resThryve = await thryve.dynamicValues(thryveToken, startDate, endDate, isDaily, source);
+    resThryve = await thryve.dynamicValues(thryveToken, startDate, endDate, isDaily, tryveSourceCode);
 
   } catch (error) {
     logger.error('ErrorX: ', error);
