@@ -1,0 +1,102 @@
+{
+	"info": {
+		"_postman_id": "b8f07156-2a84-4dee-87ce-2c5b5a09b220",
+		"name": "Thryve",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "userInformation",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "appid",
+						"value": "{{appId}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "authenticationToken",
+							"value": "{{authenticationToken}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{baseURL}}userInformation",
+					"host": [
+						"{{baseURL}}userInformation"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "basic",
+		"basic": [
+			{
+				"key": "password",
+				"value": "{{password}}",
+				"type": "string"
+			},
+			{
+				"key": "username",
+				"value": "{{username}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "52cd0efa-3cb4-4c34-b637-4afa2960bb49",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "6382789d-a38a-4229-9592-22eafd3f03db",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "eb0e0061-186d-4e9c-8b7f-e2b10d3ac371",
+			"key": "username",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "b7a0a739-b732-490d-9741-77446bf76113",
+			"key": "password",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "c6ac96ec-eb22-4734-b3a1-2530bb0cb2e2",
+			"key": "baseURL",
+			"value": "https://service.und-gesund.de/restjson/",
+			"type": "string"
+		}
+	]
+}
