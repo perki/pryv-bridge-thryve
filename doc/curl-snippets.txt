@@ -1,0 +1,6 @@
+
+
+
+curl -X POST -k -d "authenticationToken=${thryveToken}" -H "appId: ${thryveAppId}" \
+"https://${thryveUser}:${thryvePassword}@service.und-gesund.de/restjson/userInformation"
+
