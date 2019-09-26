@@ -29,4 +29,22 @@ describe('User', function () {
         done();
       });
   });
+
+
+  it('Thryve Infos', function (done) {
+    request.get(serverBasePath + '/user/thryve')
+      .set('Accept', 'application/json')
+      .set('Accept-Charset', 'utf-8')
+      .set('Accept-Encoding', 'gzip, deflate')
+      .query({
+        pryvEndpoint: testuser.pryvEndpoint
+      })
+      .end(function (err, res) {
+        should.exist(res);
+        should.exist(res.body.result);
+        should.exist(res.body.result.partnerUserID);
+        res.status.should.equal(200);
+        done();
+      });
+  });
 });

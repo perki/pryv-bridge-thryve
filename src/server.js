@@ -4,6 +4,7 @@ const app = express()
 app.use(require('body-parser').json());
 
 const user = require('./user.js');
+const thryve = require('./thryve.js');
 const storage = require('./storage.js');
 
 const port = config.get('server:port')
@@ -17,6 +18,28 @@ app.post('/user', (req, res) => {
   storage.addUser(req.body.pryvEndpoint, req.body.thryveToken);
   user.initUser({ pryvEndpoint: req.body.pryvEndpoint, thryveToken: req.body.thryveToken});
   res.send({result: 'OK'})
+});
+
+/**
+ * Get Thryve status froma Pryv User endpoint
+ */
+app.get('/user/thryve', async (req, res) => {
+  try {
+    const dbres = storage.tokenForPryvEndpoint(req.query.pryvEndpoint);
+    if (! dbres) {
+      return res.status(404).send({ error: 'User unkown' });
+    }
+    const result = await thryve.userInfo(dbres.thryveToken);
+    if (result && result.text && result.body && result.body[0]) {
+      return res.send({ result: result.body[0] });
+    }
+    console.warn(result);
+    return res.status(500).send('ERROR');
+  } catch (e) {
+    res.status(500).send('ERROR');
+    console.warn(e);
+  }
+ 
 });
 
 /**

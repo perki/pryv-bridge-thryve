@@ -18,6 +18,15 @@ exports.pryvForThryveToken = function (thryveToken) {
 }
 
 
+const queryGetThryvTokenForUser = db.prepare('SELECT thryveToken FROM users WHERE pryvEndpoint = @pryvEndpoint');
+/**
+ * @param {String} thryveToken
+ */
+exports.tokenForPryvEndpoint = function (pryvEndpoint) {
+  return queryGetThryvTokenForUser.get({ pryvEndpoint: pryvEndpoint });
+}
+
+
 // ---- Not used Yet ---/
 
 db.prepare('CREATE TABLE IF NOT EXISTS sync (syncid integer primary key, userpryv varchar(200), source integer, time integer, FOREIGN KEY(userpryv) REFERENCES users(pryvEndpoint))').run();
