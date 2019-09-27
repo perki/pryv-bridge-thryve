@@ -1,30 +1,14 @@
 # Bridge Thryve <> Pryv
 
-Exploratory work for bridge between Pryv API and Thryve API.
+Exploratory work to bridge Pryv API & Thryve API.
 
-## Install 
+## How it works.
 
-1. `npm update`
-
-2. Create a config.json file with the following informations
-
-```json
-{
-  "thryve": {
-    "auth": {"user": "...", "password": "..."},
-    "appId": "..."
-  },
-  "test": {
-    "users": [{
-      "thryveToken" : "{thryvToken}",
-      "pryvEndpoint": "https://{pryvtoken}@{pryvuser}.{domain}"
-      }
-    ]
-  }
-}
 ```
 
-Optionaly you can add your own user to run tests
+   Thryve API ---> Bridge ---> Pryv API
+
+```
 
 # API
 
@@ -47,16 +31,37 @@ This stream can be configured by adding in config.json:
 ```json
 "pryv": {
     "rootstream": { "id": "thryve", "name": "Thryve" }
-} 
+} `
 ```
-
-
 
 ## Thryve EventTrigger
 
 Thryve can send notification for every new data. 
 
 These notifications should be sent to `POST /trigger`
+
+# Install 
+
+1. `npm update`
+2. Create a config.json file with the following informations
+
+```json
+{
+  "thryve": {
+    "auth": {"user": "...", "password": "..."},
+    "appId": "..."
+  },
+  "test": {
+    "users": [{
+      "thryveToken" : "{thryvToken}",
+      "pryvEndpoint": "https://{pryvtoken}@{pryvuser}.{domain}"
+      }
+    ]
+  }
+}
+```
+
+Optionaly you can add your own user to run tests
 
 # Run
 

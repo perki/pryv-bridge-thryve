@@ -4,3 +4,20 @@
 curl -X POST -k -d "authenticationToken=${thryveToken}" -H "appId: ${thryveAppId}" \
 "https://${thryveUser}:${thryvePassword}@service.und-gesund.de/restjson/userInformation"
 
+
+curl -X POST -k -d "authenticationToken=${thryveToken}"  -H "appId: ${thryveAppId}" \
+-d'startTimestamp=2019-01-01T00:00:00Z' \
+-d'endTimestamp=2019-11-02T00:00:00Z' \
+"https://${thryveUser}:${thryvePassword}@service.und-gesund.de/restjson/v2/dailyDynamicValues"
+
+
+curl -X POST -k -d "authenticationToken=${thryveToken}"  -H "appId: ${thryveAppId}" \
+-d'startTimestamp=2019-01-01T00:00:00Z' \
+-d'endTimestamp=2019-11-02T00:00:00Z' \
+"https://${thryveUser}:${thryvePassword}@service.und-gesund.de/restjson/v2/dynamicValues"
+
+
+// js helpers
+// list dataSource
+z = require("./z.json")
+z[0].dataSources.map(function(source) { console.log(source.dataSource); })
