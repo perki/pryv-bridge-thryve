@@ -19,13 +19,21 @@ Thryve API ---> Bridge ---> Pryv API
 Content: 
 
 ```json 
-{"pryv": "https://{pryvtoken}@{pryvuser}.{domain}",   "thryveToken": "{thryvToken}", }
+{
+  "pryv": "https://{pryvtoken}@{pryvuser}.{domain}",
+  "thryveToken": "{thryvToken}"
+}
 ```
 
 **Important**: The pryvToken should have the necessary credentials to create events and streams in a stream with the id: `thryve` This stream can be configured by adding in config.json:
 
 ```json 
-"pryv": {     "rootstream": { "id": "thryve", "name": "Thryve" } } 
+"pryv": {
+    "rootstream": {
+      "id": "thryve",
+      "name": "Thryve"
+    }
+  }
 ```
 
 ## Thryve EventTrigger
@@ -41,19 +49,21 @@ These notifications should be sent to `POST /trigger`
 
 ```json 
 {
-  "thryve": {     
-    "auth": {
-      "user": "...", 
-      "password": "..."
-      },     
-      "appId": "..."
+  "thryve": {
+    "auth": {
+      "user": "...",
+      "password": "..."
+    },
+    "appId": "..."
   },
-  "test": {     
-    "users": [{       
-      "thryveToken" : "{thryvToken}",       
-      "pryvEndpoint": "https://{pryvtoken}@{pryvuser}.{domain}"       
-      }     ]   
-  } 
+  "test": {
+    "users": [
+      {
+        "thryveToken": "{thryvToken}",
+        "pryvEndpoint": "https://{pryvtoken}@{pryvuser}.{domain}"
+      }
+    ]
+  }
 }
 ```
 
