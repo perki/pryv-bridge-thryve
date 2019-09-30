@@ -1,8 +1,8 @@
-# Bridge Thryve <> Pryv
+# Bridge Thryve <> Pryv
 
 Exploratory work to bridge Pryv API & Thryve API.
 
-## How it works.
+## How it works.
 
 ```
 
@@ -10,9 +10,9 @@ Thryve API ---> Bridge ---> Pryv API
 
 ```
 
-# API
+# API
 
-## Add User
+## Add User
 
 ==>   `POST /user`
 
@@ -36,13 +36,13 @@ Content: 
   }
 ```
 
-## Thryve EventTrigger
+## Thryve EventTrigger
 
 Thryve can send notification for every new data. 
 
 These notifications should be sent to `POST /trigger`
 
-# Install 
+# Install 
 
 1. `npm update`
 2. Create a config.json file with the following information
@@ -69,7 +69,7 @@ These notifications should be sent to `POST /trigger`
 
 Optionaly you can add your own user to run tests
 
-# Run
+# Run
 
 `npm start`
 
@@ -77,7 +77,7 @@ The server will listen on the port specified in the configuration. De
 
 To run in production an SSL termination should be set up with a reverse proxy such as nginx.
 
-## Test
+# Test
 
 Complete the config.json with a valid Pryv endpoint and Thryve token.
 
@@ -85,17 +85,17 @@ Warning: Test order is not polished and it could take several "passes
 
 `npm test`
 
-# Dev
+# Dev
 
 Node.js Express APP. 
 
 Stores Pryv-user // Thryve Token in a local sqlite Database
 
-### Definitions.js 
+## Definitions.js 
 
 Definitions on how to convert Thryve DataType to Pryv are located in schemaConverters/definitions.js file.
 
-#### DataSources
+### DataSources
 
 On thryve "Sources" are given by numbers, this is set with the following list. 
 DataSource codes correspond to their positions. 
@@ -127,7 +127,7 @@ Implemented types are: 
 LONG, DOUBLE, BOOLEAN 
 ```
 
-#### Conversion logic
+### Conversion logic
 
 A measure will be stored in the following structure of streams:
 
@@ -164,7 +164,7 @@ And the necessary stream structure will be
 ]
 ```
 
-#### Combined measures
+### Combined measures
 
 Some measure send by Thryve need to be paired. For example the Geolocation which is sent in two separated items.
 
@@ -183,8 +183,7 @@ The item at position `6` has the following syntax:
 
 Measure will be kept in memory up to the finding of their counterpart, then merged.
 
-
-## Todo
+## Todo
 
 - Complete definitions.js file with corresponding event-types.
 
@@ -194,9 +193,9 @@ We cannot use the latest timestamp to synchronize. So we might want 
 
 - Handle paired code 1200 & 1201 Activity details & similar
 
-# Synchro questions
+# Synchro questions
 
-###Thryve - Destination (Dest) synchronization: 
+### Thryve - Destination (Dest) synchronization: 
 
 Goal, store in "Dest" data from Thryve with the following objectives:
 
@@ -204,7 +203,7 @@ Goal, store in "Dest" data from Thryve with the following objectives:
 - no "missing" data in Dest. (Data in Thryve and not Dest)
 - no "double" entries in Dest. (Add data in Dest that has already been loaded before)
 
-###Current implemention. 
+### Current implemention. 
 
 A bridge service (Bridge) between Thryve & Pryv
 
