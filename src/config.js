@@ -9,7 +9,7 @@ const nconf = require('nconf');
 module.exports = nconf;
 
 
-//Setup nconf to use (in-order): 
+//Setup nconf to use (in-order):
 //1. Command-line arguments
 //2. Environment variables
 
@@ -49,10 +49,10 @@ nconf.defaults({
   },
   thryveAPI: {
     userInfo: 'https://service.und-gesund.de/restjson/userInformation',
-    dynamicValues: 'https://service.und-gesund.de/restjson/v2/dynamicValues',
-    dailyDynamicValues: 'https://service.und-gesund.de/restjson/v2/dailyDynamicValues'
+    dynamicValues: 'https://service.und-gesund.de/restjson/v4/dynamicValues',
+    dailyDynamicValues: 'https://service.und-gesund.de/restjson/v4/dailyDynamicValues'
   },
   pryv: {
     rootstream: { id: 'thryve', name: 'Thryve' }
-  } 
+  }
 });

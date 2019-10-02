@@ -39,33 +39,33 @@ app.get('/user/thryve', async (req, res) => {
     res.status(500).send('ERROR');
     console.warn(e);
   }
- 
+
 });
 
 /**
  * Handle EventTrigger from Thryve backend
  */
 app.post('/trigger', async (req, res) => {
-  try { 
+  try {
     const result = await user.handleTrigger(req.body);
-    return res.status(200).send('OK');
+    return res.status(200).send({result: 'OK'});
   } catch (error) { 
     console.log('Error Trigger Res: ', error);
-    res.status(500).send('Something broke!');
-  };
+    res.status(500).send({result:'Something broke!'});
+  }
 });
 
 /**
  * Not used yet
  */
-app.post('/auto', async (req, res) => { 
+app.post('/auto', async (req, res) => {
   try { 
     storage.addSyncSourceForuser(req.body.pryvEndpoint, req.body.source);
-    res.status(200).send('OK');
+    res.status(200).send({result: 'OK'});
   } catch (error) {
     res.status(500).send(error.message);
   }
 });
- 
+
 
 app.listen(port, () => console.log(`Thryve <> Pryv bridge listening on port ${port}!`))
