@@ -54,7 +54,8 @@ These notifications should be sent to `POST /trigger`
       "user": "...",
       "password": "..."
     },
-    "appId": "..."
+    "appId": "...",
+    "appSecret": "..."
   },
   "test": {
     "users": [
@@ -67,7 +68,7 @@ These notifications should be sent to `POST /trigger`
 }
 ```
 
-Optionaly you can add your own user to run tests
+Optionally you can add your own user to run tests
 
 # Run
 
