@@ -43,7 +43,7 @@ exports.postStreamsAndEvents = async function (pryvEndpoint, streamsAndEvents) {
  */
 exports.getLastSyncTime = async function (pryvEndpoint) {
   const apiAndToken = extractAPIandToken(pryvEndpoint);
-  const lastSyncTime = -100000000000;
+  const lastSyncTime = 0;
 
   let result = await request.post(apiAndToken.api)
     .set('Authorization', apiAndToken.token)
@@ -55,6 +55,6 @@ exports.getLastSyncTime = async function (pryvEndpoint) {
   try {
     return result.body.results[0].events[0].time;
   } catch(e){
-    return new Date(0);
+    return lastSyncTime;
   }
 };
