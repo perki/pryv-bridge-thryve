@@ -10,10 +10,10 @@ exports.rootStream = rootStream;
 // --------    ACTIVE CONVERTER PART --------- //
 
 /**
- * Counter Tool for reporting 
+ * Counter Tool for reporting
  * @param {String} counterKey Message
- * @param {What} key identifier 
- * @param {Object} context 
+ * @param {String} key identifier
+ * @param {Object} context
  */
 function plusOneFor(counterKey, key, context) {
   if (!context.counters) context.counters = {};
@@ -25,20 +25,19 @@ function plusOneFor(counterKey, key, context) {
 
 /**
  * convert a data item from Thryve to Streams and Events data
- * 
+ *
  * @param {Integer} sourceCode Thryve Data Source code
  * @param {Object} data Data as per Thryve API
- * @param {Object} context { combinaisons: Map {streamCode}-{type}-{time} -> {Event} }
- * 
+ * @param {Object} context { combinations: Map {streamCode}-{type}-{time} -> {Event} }
+ *
  * @return {Object} {streams: Array of streams, event: Pryv event}
  */
 exports.thryveToPryv = function(sourceCode, data, context) {
-  if (! context || ! context.combinaisons) {
+  if (! context || ! context.combinations) {
     throw new Error('Missing context');
   }
 
-  let isDaily = false;
-  if (data.day) { isDaily = true; }
+  let isDaily = !!data.day;
 
   const source = definitions.sources[sourceCode];
   if (! source) {
@@ -81,25 +80,22 @@ exports.thryveToPryv = function(sourceCode, data, context) {
   let content = dataType.converter(data);
   let eventType = '' + dataType.type;
 
-  // This code is only valid for combinaision with 2 items in the content
+  // This code is only valid for combination with 2 items in the content
   if (dataType.type.isCombined) {
     const combineKey = dataType.type.streamCode + '-' + dataType.type.type + '-' + time;
-    if (! context.combinaisons[combineKey]) { // does not exists .. add to combinaisons map and skip 
-      context.combinaisons[combineKey] = { content: {} };
-      //console.log(JSON.stringify(combinaisons));
-      context.combinaisons[combineKey].content[dataType.type.contentKey] = content;
+    if (!context.combinations[combineKey]) { // does not exists .. add to combinations map and skip
+      context.combinations[combineKey] = { content: {} };
+      context.combinations[combineKey].content[dataType.type.contentKey] = content;
       return null;
-    } 
-    //console.log('2nd', combinaisons[combineKey], dataType.type.contentKey, content);
+    }
     eventType = dataType.type.type;
-    context.combinaisons[combineKey].content[dataType.type.contentKey] = content;
-    content = context.combinaisons[combineKey].content;
-    //console.log('zzzzz', content);
+    context.combinations[combineKey].content[dataType.type.contentKey] = content;
+    content = context.combinations[combineKey].content;
     dataStreamCode = dataType.type.streamCode;
     dataStreamName = dataType.type.streamName;
-    delete context.combinaisons[combineKey];
-    plusOneFor('Combined', 's:' + sourceCode + ' t:' + dataType.type.streamCode + ' -> ' + dataType.type.type, context);
-  }  
+    delete context.combinations[combineKey];
+    plusOneFor('Combined', `s:${sourceCode} t:${dataType.type.streamCode} -> ${dataType.type.type}`, context);
+  }
 
   const level1stream = isDaily ? { id: rootStream.id + sep + 'daily', name: 'Daily', parentId: rootStream.id } : { id: rootStream.id + sep + 'intraday', name: 'Intraday', parentId: rootStream.id };
 
@@ -107,20 +103,20 @@ exports.thryveToPryv = function(sourceCode, data, context) {
     id: level1stream.id + sep + dataStreamCode,
     name: dataStreamName,
     parentId: level1stream.id
-  }
+  };
 
   const level3Stream = {
     id: level1stream.id + sep + dataStreamCode + sep + sourceCode,
     name: source,
     parentId: level2Stream.id
-  }
+  };
 
-  const event = { 
+  const event = {
     streamId: level3Stream.id,
     type: eventType,
     time: time,
     content: content
-  }
+  };
 
 
   if (isDaily) {
@@ -130,4 +126,4 @@ exports.thryveToPryv = function(sourceCode, data, context) {
   }
 
   return { streams: [rootStream, level1stream, level2Stream, level3Stream], event: event};
-}
+};
