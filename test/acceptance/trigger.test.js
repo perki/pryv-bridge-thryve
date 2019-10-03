@@ -13,6 +13,7 @@ const testuser = config.get('test:users')[0];
 describe('trigger', function () {
 
   it('Trigger ', function (done) {
+    this.timeout(30000); // test takes ~25s for some reason
     request.post(serverBasePath + '/trigger')
       .set('Accept', 'application/json')
       .set('Accept-Charset', 'utf-8')
@@ -24,7 +25,7 @@ describe('trigger', function () {
           "partnerUserID": "test",
           "dataSource": "8",
           "startTimestamp": "2019-08-21T21:17:00Z",
-          "endTimestamp": "2019-08-21T21:17:00Z",
+          "endTimestamp": (new Date).toISOString().split('.')[0] + 'Z',
           "updateType": "MINUTE"
         }
       })
@@ -36,7 +37,7 @@ describe('trigger', function () {
 
 
   it('Trigger Apple', function (done) {
-    this.timeout(20000);
+    this.timeout(30000);
     request.post(serverBasePath + '/trigger')
       .set('Accept', 'application/json')
       .set('Accept-Charset', 'utf-8')
@@ -48,7 +49,7 @@ describe('trigger', function () {
           "partnerUserID": "test",
           "dataSource": "9",
           "startTimestamp": "2019-08-14T16:43:00Z",
-          "endTimestamp": "2019-08-21T21:17:00Z",
+          "endTimestamp": (new Date).toISOString().split('.')[0] + 'Z',
           "updateType": "MINUTE"
         }
       })

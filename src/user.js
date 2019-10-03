@@ -6,8 +6,8 @@ const logger = require('./logging.js');
 
 
 /**
- * handle Triggers from thryve. 
- * 
+ * handle Triggers from thryve.
+ *
  * 1. Takes the RAW data sent by Thryve
  * 2. Call Thryve API
  * 3. Transform result into Pryv structure and send it
@@ -26,42 +26,43 @@ exports.handleTrigger = async function (triggerData) {
   const pryvEndpoint = dbresult.pryvEndpoint;
 
   if (!['DAILY', 'BOTH', 'MINUTE', 'NEW', 'DELETED'].includes(trigger.updateType)) {
-    logger.warn('Trigger, unkonw type: ' + trigger.updateType + ' TriggerData: ' + JSON.stringify(triggerData));
-    return; 
+    logger.warn('Trigger, unknown type: ' + trigger.updateType + ' TriggerData: ' + JSON.stringify(triggerData));
+    return;
   }
 
   if (['NEW', 'DELETED'].includes(trigger.updateType)) {
     logger.info('Trigger declares ' + trigger.updateType + ' source [' + trigger.dataSource + '] for: ' + trigger.sourceUpdate );
-    return; 
+    return;
   }
 
   try {
+    const params = {
+      pryvEndpoint,
+      thryveToken: trigger.authenticationToken,
+      startDate: new Date(trigger.startTimestamp),
+      endDate: new Date(trigger.endTimestamp),
+      thryveSourceCode: trigger.dataSource,
+    };
 
     if (['DAILY', 'BOTH'].includes(trigger.updateType)) {
-      const resultDaily = await fetchFromThryveToPryv(pryvEndpoint, trigger.authenticationToken,
-        new Date(trigger.startTimestamp),
-        new Date(trigger.endTimestamp),
-        true, trigger.dataSource);
+      const resultDaily = await fetchFromThryveToPryv({...params}, true);
 
       logger.info('Trigger Daily: ' + JSON.stringify(resultDaily));
     }
 
     if (['MINUTE', 'BOTH'].includes(trigger.updateType)) {
-      const resultMinute = await fetchFromThryveToPryv(pryvEndpoint, trigger.authenticationToken,
-        new Date(trigger.startTimestamp),
-        new Date(trigger.endTimestamp),
-        false, trigger.dataSource);
+      const resultMinute = await fetchFromThryveToPryv({...params}, false);
       logger.info('Trigger Minutes: ' + JSON.stringify(resultMinute));
     }
   } catch (error) {
     throw error;
   }
-}
+};
 
 /**
  * Fetch all data created on Thryve since last synch with Pryv
- * ! running this could miss some data points that would have been added after 
- * the last synchronization and with a timestamp in the past relatively to the 
+ * ! running this could miss some data points that would have been added after
+ * the last synchronization and with a timestamp in the past relatively to the
  * earliest measure.
  */
 exports.initUser = async function (user) {
@@ -69,35 +70,44 @@ exports.initUser = async function (user) {
   const lastSyncDate = new Date(lastSyncTime * 1000);
   const now = new Date();
   logger.info('Init User: ' + user.pryvEndpoint + ' with LastSynchTime: ' + lastSyncDate);
-  const dailyRes = await fetchFromThryveToPryv(user.pryvEndpoint, user.thryveToken, lastSyncDate, now, true, -1);
+
+  const params = {
+    pryvEndpoint: user.pryvEndpoint,
+    thryveToken: user.thryveToken,
+    startDate: lastSyncDate,
+    endDate: now,
+    thryveSourceCode: -1
+  };
+
+  const dailyRes = await fetchFromThryveToPryv({...params}, true);
   logger.info('Init daily: ' + JSON.stringify(dailyRes));
-  const intraDay = await fetchFromThryveToPryv(user.pryvEndpoint, user.thryveToken, lastSyncDate, now, false, -1);
+  const intraDay = await fetchFromThryveToPryv({...params}, false);
   logger.info('Init intra: ' + JSON.stringify(intraDay));
-}
+};
 
 
 
 /**
  * Does as per the name of the function.
- * 
+ *
  * Fecth data from Thryve and send it to Thryve
- * 
+ *
  * @param {URL} pryvEndpoint
- * @param {String} thryveToken 
- * @param {Date} startDate 
+ * @param {String} thryveToken
+ * @param {Date} startDate
  * @param {Date} endDate
+ * @param {String} thryveSourceCode Thryve SourceCode negative for all
  * @param {Boolean} isDaily true for daily, false for intraday
- * @param {Int} tryveSourceCode Thryve SourceCode negative for all
  */
-async function fetchFromThryveToPryv(pryvEndpoint, thryveToken, startDate, endDate, isDaily, tryveSourceCode) {
-    const streamList = [];
-    const streamMap = {};
-    const events = [];
+async function fetchFromThryveToPryv({pryvEndpoint, thryveToken, startDate, endDate, thryveSourceCode}, isDaily) {
+  const streamList = [];
+  const streamMap = {};
+  const events = [];
 
   let resThryve = null;
   try {
     // get data from Thryve
-    resThryve = await thryve.dynamicValues(thryveToken, startDate, endDate, isDaily, tryveSourceCode);
+    resThryve = await thryve.dynamicValues(thryveToken, startDate, endDate, isDaily, thryveSourceCode);
 
   } catch (error) {
     logger.error('ErrorX: ', error);
@@ -105,11 +115,11 @@ async function fetchFromThryveToPryv(pryvEndpoint, thryveToken, startDate, endDa
   }
 
   // convert to pryv model
-  if (!resThryve.body[0] || !resThryve.body[0].dataSources) {
+  if (!resThryve.body.length || !resThryve.body[0].dataSources) { // todo add proper handling
     throw new Error('Invalid body response: ' + resThryve.body);
   }
 
-  const context = { combinaisons : {} };
+  const context = { combinations : {} };
   resThryve.body[0].dataSources.map(function (dataSource) {
     if (!dataSource) {
       throw new Error('Invalid datasource content: ' + resThryve.body[0]);
@@ -132,12 +142,12 @@ async function fetchFromThryveToPryv(pryvEndpoint, thryveToken, startDate, endDa
       })
     });
   });
-  
-  logger.info('Remaining combinaisons: ' + JSON.stringify(context.combinaisons));
+
+  logger.info('Remaining combinations: ' + JSON.stringify(context.combinations));
 
   let resPryv = null;
-  try { 
-  // post to pryv
+  try {
+    // post to pryv
     resPryv = await pryv.postStreamsAndEvents(pryvEndpoint, { streams: streamList, events: events });
   } catch (error) {
     logger.error('ErrorY: ', error);
@@ -147,11 +157,11 @@ async function fetchFromThryveToPryv(pryvEndpoint, thryveToken, startDate, endDa
   return {
     counters: context.counters,
     eventsCounts: events.length,
-    //thryveResult: resThryve.body[0], 
+    //thryveResult: resThryve.body[0],
     //pryvRequest: { streams: streamList, events: events },
     //pryvResult: resPryv
   }
- 
+
 }
 
 
@@ -163,7 +173,14 @@ async function fetchFromThryveToPryv(pryvEndpoint, thryveToken, startDate, endDa
 async function checkForUpdateAll() {
   const ulist = storage.getAllToBeSynched();
   return await Promise.all(ulist.map(async function (user) {
-    const res = await fetchFromThryveToPryv(user.pryvEndpoint, user.thryveToken, new Date(user.lastSynch), new Date(), true, -1);
+    const params = {
+      pryvEndpoint: user.pryvEndpoint,
+      thryveToken: user.thryveToken,
+      startDate: new Date(user.lastSynch),
+      endDate: new Date(),
+      thryveSourceCode: -1
+    };
+    await fetchFromThryveToPryv({...params}, true);
   }));
 }
 

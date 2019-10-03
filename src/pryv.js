@@ -1,7 +1,7 @@
 const request = require('superagent');
 const rootStream = require('./config.js').get('pryv:rootstream');
 
-// This should be removed as soon as Pryv API version >= 1.4.16 
+// This should be removed as soon as Pryv API version >= 1.4.16
 const regexAPIandToken = /(.+):\/\/(.+)@(.+)/gm;
 function extractAPIandToken(pryvEndpoint) {
   regexAPIandToken.lastIndex = 0;
@@ -12,7 +12,7 @@ function extractAPIandToken(pryvEndpoint) {
 const chunkSize = 1000;
 exports.postStreamsAndEvents = async function (pryvEndpoint, streamsAndEvents) {
   const batch = [];
-  streamsAndEvents.streams.map(function (stream) { 
+  streamsAndEvents.streams.map(function (stream) {
     batch.push({
       method: 'streams.create',
       params: stream
@@ -34,28 +34,27 @@ exports.postStreamsAndEvents = async function (pryvEndpoint, streamsAndEvents) {
       .set('Authorization', apiAndToken.token)
       .send(thisBatch);
     res.push(resRequest.body);
-    //console.log(batch.length);
   }
   return res;
-}
+};
 
 /**
- * Return Last synched 
+ * Return Last synched
  */
 exports.getLastSyncTime = async function (pryvEndpoint) {
   const apiAndToken = extractAPIandToken(pryvEndpoint);
-  const lastSyncTime = -100000000000;
- 
-  const result = await request.post(apiAndToken.api)
+  const lastSyncTime = 0;
+
+  let result = await request.post(apiAndToken.api)
     .set('Authorization', apiAndToken.token)
     .send([{
       method: 'events.get',
       params: {streams: [rootStream.id], limit: 1}
     }]);
 
-  if (result && result.body && result.body.results && result.body.results[0] && result.body.results[0].events && result.body.results[0].events[0]) { 
+  try {
     return result.body.results[0].events[0].time;
+  } catch(e){
+    return lastSyncTime;
   }
-
-  return lastSyncTime;
-}
+};
