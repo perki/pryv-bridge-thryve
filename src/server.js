@@ -1,22 +1,25 @@
-const express = require('express')
-const config = require('./config.js')
-const app = express()
+const express = require('express');
+const config = require('./config.js');
+const app = express();
 app.use(require('body-parser').json());
 
 const user = require('./user.js');
 const thryve = require('./thryve.js');
 const storage = require('./storage.js');
 
-const port = config.get('server:port')
+const port = config.get('server:port');
 
-app.get('/', (req, res) => res.send('Hello World!'))
+app.get('/', (req, res) => res.send('Hello World!'));
 
 /**
  * Create a User
  */
-app.post('/user', (req, res) => {
+app.post('/user', async (req, res) => {
+  if(!req.body.pryvEndpoint || !req.body.thryveToken){
+    res.status(400).send('Check pryvEndpoint and thryveToken fields');
+  }
   storage.addUser(req.body.pryvEndpoint, req.body.thryveToken);
-  user.initUser({ pryvEndpoint: req.body.pryvEndpoint, thryveToken: req.body.thryveToken});
+  await user.initUser({ pryvEndpoint: req.body.pryvEndpoint, thryveToken: req.body.thryveToken});
   res.send({result: 'OK'})
 });
 
@@ -39,7 +42,6 @@ app.get('/user/thryve', async (req, res) => {
     res.status(500).send('ERROR');
     console.warn(e);
   }
-
 });
 
 /**
@@ -49,9 +51,9 @@ app.post('/trigger', async (req, res) => {
   try {
     const result = await user.handleTrigger(req.body);
     return res.status(200).send({result: 'OK'});
-  } catch (error) { 
+  } catch (error) {
     console.log('Error Trigger Res: ', error);
-    res.status(500).send({result:'Something broke!'});
+    res.status(500).send('Something broke!');
   }
 });
 
@@ -59,13 +61,12 @@ app.post('/trigger', async (req, res) => {
  * Not used yet
  */
 app.post('/auto', async (req, res) => {
-  try { 
-    storage.addSyncSourceForuser(req.body.pryvEndpoint, req.body.source);
+  try {
+    storage.addSyncSourceForUser(req.body.pryvEndpoint, req.body.source);
     res.status(200).send({result: 'OK'});
   } catch (error) {
     res.status(500).send(error.message);
   }
 });
-
 
 app.listen(port, () => console.log(`Thryve <> Pryv bridge listening on port ${port}!`))
