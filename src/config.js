@@ -48,7 +48,7 @@ nconf.defaults({
     path: './db.sqlite'
   },
   thryveAPI: {
-    userInfo: 'https://service.und-gesund.de/restjson/userInformation',
+    userInfo: 'https://service.und-gesund.de/restjson/v4/userInformation',
     dynamicValues: 'https://service.und-gesund.de/restjson/v4/dynamicValues',
     dailyDynamicValues: 'https://service.und-gesund.de/restjson/v4/dailyDynamicValues'
   },
