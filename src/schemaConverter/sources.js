@@ -1,0 +1,1 @@
+exports.sources = ["Dummy", "Fitbit", "Garmin", "Polar", "UNUSED", "Apple", "Samsung", "Misfit", "Withings", "Thryve Connector", "Thryve Wearable Connector", "Strava", "GoogleFit REST", "Xiaomi", "MyFitnessPal", "Runtastic", "Omron", "Suunto", "Oura", "Runkeeper", "Endomondo", "iHealth", "Abbott(FreeStyleLibre)", "Medisana", "Sleep As Android"];

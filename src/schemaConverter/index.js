@@ -1,4 +1,5 @@
 const definitions = require('./definitions');
+const availableSources = require('./sources');
 const logger = require('../logging');
 
 const rootStream = require('../config.js').get('pryv:rootstream');
@@ -39,7 +40,7 @@ exports.thryveToPryv = function(sourceCode, data, context) {
 
   let isDaily = !!data.day;
 
-  const source = definitions.sources[sourceCode];
+  const source = availableSources[sourceCode];
   if (! source) {
     plusOneFor('missingSourceCode','s:' + sourceCode, context);
     //logger.warn('Cannot find sourceCode for: ' + sourceCode + ' => ' + JSON.stringify(data));
@@ -68,7 +69,7 @@ exports.thryveToPryv = function(sourceCode, data, context) {
 
   if (dataType.type === 'todo') {
     plusOneFor('notDocumented', 's:' + sourceCode + ' d:' + dataCode, context);
-    logger.warn('Data-Type not documented for: ' + JSON.stringify(data));
+    // logger.warn('Data-Type not documented for: ' + JSON.stringify(data));
     return null;
   }
 
