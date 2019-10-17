@@ -1,0 +1,18 @@
+version: "3"
+services:
+  app:
+    build:
+      context: .
+    container_name: pryv-to-thryve
+    restart: on-failure
+    user: node
+    networks:
+      - app
+    ports:
+      - "80:2606"
+    tty: true
+    volumes:
+      - ./:/app
+
+networks:
+  app:
