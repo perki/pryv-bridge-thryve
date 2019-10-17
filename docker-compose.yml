@@ -9,7 +9,7 @@ services:
     networks:
       - app
     ports:
-      - "80:2606"
+      - "2606:2606",
     tty: true
     volumes:
       - ./:/app
