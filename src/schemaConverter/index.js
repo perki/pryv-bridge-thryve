@@ -1,5 +1,5 @@
 const definitions = require('./definitions');
-const availableSources = require('./sources');
+const availableSources = require('./sources').sources;
 const logger = require('../logging');
 
 const rootStream = require('../config.js').get('pryv:rootstream');
@@ -33,22 +33,22 @@ function plusOneFor(counterKey, key, context) {
  *
  * @return {Object} {streams: Array of streams, event: Pryv event}
  */
-exports.thryveToPryv = function(sourceCode, data, context) {
-  if (! context || ! context.combinations) {
+exports.thryveToPryv = function (sourceCode, data, context) {
+  if (!context || !context.combinations) {
     throw new Error('Missing context');
   }
 
   let isDaily = !!data.day;
 
   const source = availableSources[sourceCode];
-  if (! source) {
-    plusOneFor('missingSourceCode','s:' + sourceCode, context);
+  if (!source) {
+    plusOneFor('missingSourceCode', 's:' + sourceCode, context);
     //logger.warn('Cannot find sourceCode for: ' + sourceCode + ' => ' + JSON.stringify(data));
     return null;
   }
 
   const numCode = data[isDaily ? 'dailyDynamicValueType' : 'dynamicValueType'];
-  if (! numCode) {
+  if (!numCode) {
     plusOneFor('missingDataCode', 's:' + sourceCode, context);
     logger.warn('Cannot find dataCode for: ' + data);
     return null;
@@ -76,38 +76,43 @@ exports.thryveToPryv = function(sourceCode, data, context) {
 
   const time = Date.parse(data[isDaily ? 'day' : 'timestamp']) / 1000;
 
-  let dataStreamCode = dataType.streamCode;
-  let dataStreamName = dataType.streamName;
+  let {streamCode, streamName} = dataType;
   let content = dataType.converter(data);
   let eventType = '' + dataType.type;
 
   // This code is only valid for combination with 2 items in the content
   if (dataType.type.isCombined) {
-    const combineKey = dataType.type.streamCode + '-' + dataType.type.type + '-' + time;
+    streamCode = dataType.type.streamCode;
+    streamName = dataType.type.streamName;
+    eventType = dataType.type.type;
+
+    const combineKey = streamCode + '-' + eventType + '-' + time;
     if (!context.combinations[combineKey]) { // does not exists .. add to combinations map and skip
-      context.combinations[combineKey] = { content: {} };
+      context.combinations[combineKey] = {content: {}};
       context.combinations[combineKey].content[dataType.type.contentKey] = content;
       return null;
     }
-    eventType = dataType.type.type;
     context.combinations[combineKey].content[dataType.type.contentKey] = content;
     content = context.combinations[combineKey].content;
-    dataStreamCode = dataType.type.streamCode;
-    dataStreamName = dataType.type.streamName;
+
     delete context.combinations[combineKey];
-    plusOneFor('Combined', `s:${sourceCode} t:${dataType.type.streamCode} -> ${dataType.type.type}`, context);
+    plusOneFor('Combined', `s:${sourceCode} t:${streamCode} -> ${eventType}`, context);
   }
 
-  const level1stream = isDaily ? { id: rootStream.id + sep + 'daily', name: 'Daily', parentId: rootStream.id } : { id: rootStream.id + sep + 'intraday', name: 'Intraday', parentId: rootStream.id };
+  const level1stream = isDaily ? {
+    id: rootStream.id + sep + 'daily',
+    name: 'Daily',
+    parentId: rootStream.id
+  } : {id: rootStream.id + sep + 'intraday', name: 'Intraday', parentId: rootStream.id};
 
   const level2Stream = {
-    id: level1stream.id + sep + dataStreamCode,
-    name: dataStreamName,
+    id: level1stream.id + sep + streamCode,
+    name: streamName,
     parentId: level1stream.id
   };
 
   const level3Stream = {
-    id: level1stream.id + sep + dataStreamCode + sep + sourceCode,
+    id: level1stream.id + sep + streamCode + sep + sourceCode,
     name: source,
     parentId: level2Stream.id
   };

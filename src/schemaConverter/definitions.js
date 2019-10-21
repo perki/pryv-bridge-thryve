@@ -1,6 +1,6 @@
 const logger = require('../logging');
 
-const dataTypesCSV = require('./dataTypes');
+const dataTypesCSV = require('./dataTypesCSV');
 
 /**
  - Definitions syntax and how to update this document can be found in README.md
@@ -66,7 +66,7 @@ dataTypesCSV.map(function(line) {
   };
 });
 
-module.dataTypes = dataTypes;
+exports.dataTypes = dataTypes;
 
 function toSnake(s) {
   return s.replace(/(?:^|\.?)([A-Z])/g, function (x, y) {

@@ -8,7 +8,7 @@ const logger = require('../logging');
  * @param user
  * @returns {Promise<void>}
  */
-initUser = async (user) => {
+const initUser = async (user) => {
   const userRecord = storage.getUser(user.pryvEndpoint);
 
   if (!userRecord) {

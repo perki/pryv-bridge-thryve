@@ -21,24 +21,20 @@ exports.handleTrigger = async function (triggerData) {
 
   const trigger = triggerData.sourceUpdate;
 
-  try {
-    const sync = new Sync(pryvEndpoint, trigger.authenticationToken);
-    const startDate = new Date(trigger.startTimestamp);
-    const endDate = new Date(trigger.endTimestamp);
-    const thryveSourceCode = trigger.dataSource;
+  const sync = new Sync(pryvEndpoint, trigger.authenticationToken);
+  const startDate = new Date(trigger.startTimestamp);
+  const endDate = new Date(trigger.endTimestamp);
+  const thryveSourceCode = trigger.dataSource;
 
-    if (['DAILY', 'BOTH'].includes(trigger.updateType)) {
-      const resultDaily = await sync.syncData(startDate, endDate, thryveSourceCode, true);
+  if (['DAILY', 'BOTH'].includes(trigger.updateType)) {
+    const resultDaily = await sync.syncData(startDate, endDate, thryveSourceCode, true);
 
-      logger.info('Trigger Daily: ' + endDate);
-    }
+    logger.info('Trigger Daily: ' + endDate);
+  }
 
-    if (['MINUTE', 'BOTH'].includes(trigger.updateType)) {
-      const resultMinute = await sync.syncData(startDate, endDate, thryveSourceCode, false);
-      logger.info('Trigger Minutes: '+ endDate );
-    }
-  } catch (error) {
-    throw error;
+  if (['MINUTE', 'BOTH'].includes(trigger.updateType)) {
+    const resultMinute = await sync.syncData(startDate, endDate, thryveSourceCode, false);
+    logger.info('Trigger Minutes: ' + endDate);
   }
 };
 
