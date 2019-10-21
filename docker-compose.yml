@@ -3,16 +3,20 @@ services:
   app:
     build:
       context: .
-    container_name: pryv-to-thryve
+    container_name: pryv-bridge-thryve
     restart: on-failure
-    user: node
     networks:
       - app
     ports:
       - "2606:2606"
     tty: true
     volumes:
-      - ./:/app
+      - "logs:/app/logs"
+      - "db:/app/db"
+
+volumes:
+  logs:
+  db:
 
 networks:
   app:
