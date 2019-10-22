@@ -1,0 +1,22 @@
+version: "3"
+services:
+  app:
+    build:
+      context: .
+    container_name: pryv-bridge-thryve
+    restart: on-failure
+    networks:
+      - app
+    ports:
+      - "2606:2606"
+    tty: true
+    volumes:
+      - "logs:/app/logs"
+      - "db:/app/db"
+
+volumes:
+  logs:
+  db:
+
+networks:
+  app:
