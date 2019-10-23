@@ -5,7 +5,7 @@ const {handleTrigger} = require('../handlers/trigger');
 
 router.post('/', async (req, res) => {
   try {
-    if (!req.body.pryvEndpoint || !req.body.thryveToken) {
+    if (!req.body.pryvEndpoint || !req.body.thryveToken || req.body.thryveToken.length < 32) {
       res.status(400).send('Check pryvEndpoint and thryveToken fields');
     }
     const result = await handleTrigger(req.body);

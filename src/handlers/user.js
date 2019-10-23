@@ -5,10 +5,9 @@ const logger = require('../logging');
 
 /**
  * Stores user and synchronizes his data
- * @param user
- * @returns {Promise<void>}
+ * @param {Object} user
  */
-const initUser = async (user) => {
+const initUser = (user) => {
   const userRecord = storage.getUser(user.pryvEndpoint);
 
   if (!userRecord) {
@@ -17,7 +16,7 @@ const initUser = async (user) => {
     storage.addUser(user.pryvEndpoint, user.thryveToken);
   }
 
-  await update(user);
+  update(user);
 };
 
 /**

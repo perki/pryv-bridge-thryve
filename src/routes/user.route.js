@@ -7,13 +7,13 @@ const {initUser, getUser} = require('../handlers/user');
  * Create a User
  */
 router.post('/', async (req, res) => {
-  if (!req.body.pryvEndpoint || !req.body.thryveToken) {
+  if (!req.body.pryvEndpoint || !req.body.thryveToken || req.body.thryveToken.length < 32) {
     res.status(400).send('Check pryvEndpoint and thryveToken fields');
   }
 
   try {
-    await initUser({pryvEndpoint: req.body.pryvEndpoint, thryveToken: req.body.thryveToken});
-    res.send({result: 'OK'})
+    initUser({pryvEndpoint: req.body.pryvEndpoint, thryveToken: req.body.thryveToken});
+    res.send({status: 'Started sync'});
   } catch (e) {
     logger.error('User init error: ', e);
     res.status(500).send('Something went wrong while user initializing');
