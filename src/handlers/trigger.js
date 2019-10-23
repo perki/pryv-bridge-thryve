@@ -12,7 +12,7 @@ const Sync = require('../services/Sync');
 exports.handleTrigger = async function (triggerData) {
   const dbresult = storage.pryvForThryveToken(triggerData.sourceUpdate.authenticationToken);
 
-  if (!dbresult || dbresult.pryvEndpoint) {
+  if (!dbresult || !dbresult.pryvEndpoint) {
     logger.error('Trigger: No user found');
     throw new Error({code: 404, msg: 'Trigger: No user found'});
   }
