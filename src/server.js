@@ -26,6 +26,6 @@ app.post('/auto', async (req, res) => {
 
 const port = config.get('server:port');
 
-app.listen(port, () => console.log(`Thryve <> Pryv bridge listening on port ${port}!`));
+app.listen(port, () => console.log(`${(new Date()).toISOString()}: Thryve <> Pryv bridge listening on port ${port}!`));
 
 

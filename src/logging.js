@@ -1,6 +1,7 @@
 const winston = require('winston');
+const path = require('path');
 const options = {
-  filename: 'logfile.log',
+  filename: path.join(__dirname, '..', '/logs', 'logfile.log'),
   maxSize: 12000
 };
 

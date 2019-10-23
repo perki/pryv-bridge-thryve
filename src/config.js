@@ -2,6 +2,7 @@
 
 const logger = require('./logging');
 const fs = require('fs');
+const path = require('path');
 const nconf = require('nconf');
 
 // Exports
@@ -45,7 +46,7 @@ nconf.defaults({
     ip: '127.0.0.1'
   },
   database: {
-    path: './db.sqlite'
+    path: path.join(__dirname, '..', '/db', '/db.sqlite')
   },
   thryveAPI: {
     userInfo: 'https://service.und-gesund.de/restjson/v4/userInformation',

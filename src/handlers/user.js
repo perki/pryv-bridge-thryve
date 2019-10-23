@@ -12,7 +12,7 @@ const initUser = async (user) => {
   const userRecord = storage.getUser(user.pryvEndpoint);
 
   if (!userRecord) {
-    logger.info('Init User: ' + user.pryvEndpoint);
+    logger.info(`Init User: ${user.pryvEndpoint} at ${(new Date().toISOString())}`);
 
     storage.addUser(user.pryvEndpoint, user.thryveToken);
   }

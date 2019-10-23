@@ -16,7 +16,7 @@ router.post('/', async (req, res) => {
     res.send({result: 'OK'})
   } catch (e) {
     logger.error('User init error: ', e);
-    res.status(500).send('Something went wrong while initializing a user');
+    res.status(500).send('Something went wrong while user initializing');
   }
 });
 
