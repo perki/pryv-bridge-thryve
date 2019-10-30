@@ -168,7 +168,9 @@ const dataTypesCSV = [
   "8032;ConsumedVitaminC;Daily;nutritional intake of vitamin C in mg;DOUBLE;todo",
   "8032;ConsumedVitaminC;Intraday;nutritional intake of vitamin C in mg;DOUBLE;todo",
   "8033;ConsumedVitaminD;Intraday;nutritional intake of vitamin D in mg;DOUBLE;todo",
-  "2201;SleepLinearAnalysis;Daily;Multiple regression of steps, MET and SleepStartTime on Sleep Quality over the last 3 month;LINEAR-ANALYSIS;todo"
+  "2201;SleepLinearAnalysis;Daily;Multiple regression of steps, MET and SleepStartTime on Sleep Quality over the last 3 month;LINEAR-ANALYSIS;todo",
+  "1501;UnsteadyHighActivity;Daily;most likely to act on activity promotion messages;STRING;times",
+  "1502;PeriodicalHighActivity;Daily;regular physical activity;LONG;times",
 ];
 
 module.exports = dataTypesCSV;
