@@ -12,8 +12,8 @@ router.post('/', async (req, res) => {
   }
 
   try {
-    initUser({pryvEndpoint: req.body.pryvEndpoint, thryveToken: req.body.thryveToken});
-    res.send({status: 'Started sync'});
+    const status = initUser({pryvEndpoint: req.body.pryvEndpoint, thryveToken: req.body.thryveToken});
+    res.send({status});
   } catch (e) {
     logger.error('User init error: ', e);
     res.status(500).send('Something went wrong while user initializing');

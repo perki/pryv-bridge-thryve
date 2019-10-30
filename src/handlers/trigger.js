@@ -23,19 +23,18 @@ exports.handleTrigger = async function (triggerData) {
   const trigger = triggerData.sourceUpdate;
 
   const sync = new Sync(pryvEndpoint, trigger.authenticationToken);
-  const startDate = new Date(trigger.startTimestamp);
-  const endDate = new Date(trigger.endTimestamp);
-  const thryveSourceCode = trigger.dataSource;
+
+  const {startTimestamp, endTimestamp, dataSource} = trigger;
 
   if (['DAILY', 'BOTH'].includes(trigger.updateType)) {
-    const resultDaily = await sync.syncData(startDate, endDate, thryveSourceCode, true);
+    await sync.syncData(true, startTimestamp, endTimestamp, dataSource);
 
-    logger.info('Trigger Daily: ' + endDate);
+    logger.info('Trigger Daily: ' + new Date(endTimestamp));
   }
 
   if (['MINUTE', 'BOTH'].includes(trigger.updateType)) {
-    const resultMinute = await sync.syncData(startDate, endDate, thryveSourceCode, false);
-    logger.info('Trigger Minutes: ' + endDate);
+    await sync.syncData(false, startTimestamp, endTimestamp, dataSource);
+    logger.info('Trigger Minutes: ' + new Date(endTimestamp));
   }
 };
 
@@ -61,6 +60,4 @@ function validateTriggerRequest(triggerData) {
   if (!dbresult || !dbresult.pryvEndpoint) {
     throw Error('Cannot find user for Trigger Token: ' + authenticationToken);
   }
-
-  return true;
 }

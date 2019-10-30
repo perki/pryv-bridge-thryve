@@ -3,12 +3,11 @@ const storage = require('../repositories/Storage');
 const {update} = require('../services/update');
 
 /**
- * check all users that need to be updated
- * Known to be BOGUS  and UNFINISHED
+ * Update all users stored in db
  */
 exports.updateSourcesData = async () => {
-  const sources = storage.getAllToBeSynced();
-  return await Promise.all(sources.map(async user => {
+  const users = storage.getUsers();
+  return await Promise.all(users.map(async user => {
     try {
       return await update(user);
     } catch (e) {
