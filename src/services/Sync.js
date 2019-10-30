@@ -1,9 +1,8 @@
 const thryve = require('./thryve.js');
 const pryv = require('./pryv.js');
 const logger = require('../logging.js');
-const storage = require('../repositories/Storage.js');
 const availableSources = require('../schemaConverter/sources');
-const {convertToPryv} = require('../utils');
+const {getLeaves, convertToPryv} = require('../utils');
 
 class Sync {
   constructor(pryvEndpoint, thryveToken) {
@@ -11,38 +10,65 @@ class Sync {
     this.thryveToken = thryveToken;
   }
 
-  async syncAll(startTime, endTime, source){
-    await this.syncData(startTime, endTime, source, true);
-    await this.syncData(startTime, endTime, source, false);
+  async syncAll() {
+    await this.syncData(true);
+    await this.syncData(false);
   }
 
   /**
-   * Synchronize daily and intraday data, updates timestamps
-   * @param {Date} startDate
-   * @param {Date} endDate
+   * Synchronize daily and intraday data
+   * @param {boolean} isDaily
+   * @param {number} startTime
+   * @param {number} endTime
    * @param {number} source
-   * @param isDaily
-   * @returns {Promise<Array>}
    */
-  async syncData(startDate, endDate, source, isDaily) {
+  async syncData(isDaily = false, startTime = 0, endTime, source) {
+    const parentId = isDaily ? 'thryve-daily' : 'thryve-intraday';
+    let streams = await this.getUserStreams(parentId);
+    let sourcesLastSync;
+
+    if (streams.length) {
+      if (source) streams = streams.filter(stream => ~stream.indexOf(source));
+
+      sourcesLastSync = await this.getSourcesLastSyncTime(streams);
+      const minTime = Math.min(...Object.values(sourcesLastSync));
+      if (!startTime) startTime = minTime * 1000;
+    }
+
+    const startDate = new Date(startTime);
+    const endDate = endTime ? new Date(endTime) : new Date();
+
+    const data = await this.getDataToUpload(startDate, endDate, source, isDaily, sourcesLastSync);
+
+    if (data.events.length) {
+      await this.uploadToPryv(data);
+      logger.info(
+        `Successfully transferred ${isDaily ? 'daily' : 'intraDays'} data for user: ${this.pryvEndpoint}, source: ${source === -1 ? 'All' : availableSources[source]}`);
+    }
+  }
+
+  async getDataToUpload(startDate, endDate, source, isDaily, sourcesLastSync) {
     const thryveResponse = await this.fetchFromThryve(startDate, endDate, source, isDaily);
-    if (!thryveResponse.body[0].dataSources) {
-      throw new Error('Invalid datasource content: ' + thryveResponse.body[0]);
-    }
-    const filteredData = this.filterResults(thryveResponse.body[0].dataSources, isDaily);
-    if (filteredData.length) {
-      const data = convertToPryv(filteredData);
+    const filteredData = this.filterData(thryveResponse.body[0].dataSources, sourcesLastSync);
+    return convertToPryv(filteredData);
+  }
 
-      if(Object.keys(data).length) {
-        await this.uploadToPryv(data);
-        this.updateSyncSources(thryveResponse.body[0].dataSources);
+  /**
+   * Filter events those timestamps are before the correspondent stream
+   */
+  filterData(dataSources, sourcesLastSync) {
+    const filteredData = [];
+    dataSources.forEach(source => {
+      const {dataSource} = source;
+      const data = source.data.filter(event => {
+        const time = (new Date(event.day ? event.day : event.timestamp)) / 1000;
+        return !(sourcesLastSync[dataSource] && time <= sourcesLastSync[dataSource]);
+      });
 
-        console.info(`Successfully transferred ${isDaily ? 'daily' : 'intraDays'} data for 
-                            user: ${this.pryvEndpoint}, source: ${source === -1 ? 'All sources' : availableSources[source]}`);
-      } else {
-        console.info('There was data to update, but it wasn`t found in schema');
+      if (data.length) {
+        filteredData.push({dataSource, data});
       }
-    }
+    });
 
     return filteredData;
   }
@@ -75,32 +101,6 @@ class Sync {
   }
 
   /**
-   * Inserts or updates each synced source
-   * time = last data record time || sync
-   * @param {Array} dataSources
-   */
-  updateSyncSources(dataSources) {
-    const syncedSources = storage.getSyncedSources(this.pryvEndpoint);
-
-    dataSources.forEach(item => {
-      const {data, dataSource} = item;
-      const sync = syncedSources[dataSource];
-      const lastEvent = data[data.length - 1];
-
-      let intraTime = +(new Date(lastEvent.timestamp));
-      let dailyTime = +(new Date(lastEvent.day));
-
-      if (sync) {
-        intraTime = intraTime || sync.intraTime;
-        dailyTime = dailyTime || sync.dailyTime;
-        storage.updateSyncSource(this.pryvEndpoint, dailyTime, intraTime);
-      } else {
-        storage.addSyncSourceForUser(this.pryvEndpoint, dataSource, dailyTime, intraTime);
-      }
-    });
-  }
-
-  /**
    *
    * @param data
    * @returns {Promise<{pryvResult: Array, pryvRequest: *}>}
@@ -121,38 +121,40 @@ class Sync {
   }
 
   /**
-   * Filters response sources with timestamp before last synced time
-   * @param {Array} dataSources
-   * @param {Boolean} isDaily
-   * @returns {Array}
+   *
+   * @param {string} parentId
+   * @returns {Promise<string[]>}
    */
-  filterResults(dataSources, isDaily) {
-    const syncedSources = storage.getSyncedSources(this.pryvEndpoint);
-    let result = [];
+  async getUserStreams(parentId) {
+    const streams = await pryv.getUserStreams(this.pryvEndpoint, parentId) || [];
+    let sourceStreams = [];
+    streams.forEach(stream => getLeaves(sourceStreams, stream));
+    return sourceStreams;
+  }
 
-    dataSources.forEach(item => {
-      const {data, dataSource} = item;
-      const sync = syncedSources[dataSource];
-      let resultData = data;
+  /**
+   *
+   * @param {string[]} streams
+   * @returns {Promise<void>}
+   */
+  async getSourcesLastSyncTime(streams) {
+    const streamsTimestamp = {};
 
-      if (sync) {
-        resultData = data.filter(event => {
-          if (isDaily) {
-            const eventTime = +(new Date(event.day));
-            return eventTime > sync.dailyTime;
+    try {
+      await Promise.all(streams.map(async stream => {
+          const match = /\d+/i.exec(stream);
+          if (match) {
+            const source = match[0];
+            const streamLastTime = await pryv.getStreamLastSyncTime(this.pryvEndpoint, [stream]);
+            if (!streamsTimestamp[source] || streamsTimestamp[source] < streamLastTime) streamsTimestamp[source] = streamLastTime;
           }
+        })
+      );
+    } catch (e) {
+      console.log(e);
+    }
 
-          const eventTime = +(new Date(event.timestamp));
-          return eventTime > sync.intraTime;
-        });
-      }
-
-      if (resultData.length) {
-        result.push({dataSource, data: resultData});
-      }
-    });
-
-    return result;
+    return streamsTimestamp;
   }
 }
 

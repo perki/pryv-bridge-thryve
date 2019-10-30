@@ -10,7 +10,7 @@ function extractAPIandToken(pryvEndpoint) {
 }
 
 const chunkSize = 1000;
-exports.postStreamsAndEvents = async function (pryvEndpoint, streamsAndEvents) {
+postStreamsAndEvents = async function (pryvEndpoint, streamsAndEvents) {
   const batch = [];
   streamsAndEvents.streams.map(function (stream) {
     batch.push({
@@ -39,22 +39,51 @@ exports.postStreamsAndEvents = async function (pryvEndpoint, streamsAndEvents) {
 };
 
 /**
- * Return Last synched
+ *
+ * @param pryvEndpoint
+ * @param parentId
+ * @returns {Promise<*>}
  */
-exports.getLastSyncTime = async function (pryvEndpoint) {
+getUserStreams = async (pryvEndpoint, parentId = rootStream.id) => {
+  const apiAndToken = extractAPIandToken(pryvEndpoint);
+
+  const resRequest = await request.post(apiAndToken.api)
+    .set('Authorization', apiAndToken.token)
+    .send([{
+      method: 'streams.get',
+      params: {parentId}
+    }]);
+
+  return resRequest.body.results ? resRequest.body.results[0].streams : [];
+};
+
+/**
+ * Return Last synced
+ * @param pryvEndpoint
+ * @param streams
+ * @returns {Promise<number>}
+ */
+async function getStreamLastSyncTime(pryvEndpoint, streams) {
   const apiAndToken = extractAPIandToken(pryvEndpoint);
   const lastSyncTime = 0;
+  const streamsParam = streams || [rootStream.id];
 
   let result = await request.post(apiAndToken.api)
     .set('Authorization', apiAndToken.token)
     .send([{
       method: 'events.get',
-      params: {streams: [rootStream.id], limit: 1}
+      params: {streams: streamsParam, limit: 1}
     }]);
 
   try {
     return result.body.results[0].events[0].time;
-  } catch(e){
+  } catch (e) {
     return lastSyncTime;
   }
+}
+
+module.exports = {
+  getStreamLastSyncTime,
+  postStreamsAndEvents,
+  getUserStreams
 };

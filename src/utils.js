@@ -1,4 +1,5 @@
 const schemaConverter = require('./schemaConverter');
+const {sources} = require('./schemaConverter/sources');
 
 /**
  *
@@ -48,8 +49,22 @@ function convertToPryv(dataSources) {
   return {streams: Object.values(streamMap), events};
 }
 
+
+function getLeaves(result, stream) {
+  if (stream.children.length) {
+    stream.children.forEach(child => getLeaves(result, child));
+  } else {
+    let match = /\d+/.exec(stream.id);
+
+    if (match && sources[match[0]]) {
+      result.push(stream.id);
+    }
+  }
+}
+
 module.exports = {
   isUserSynced,
   getLastSync,
-  convertToPryv
+  convertToPryv,
+  getLeaves
 };

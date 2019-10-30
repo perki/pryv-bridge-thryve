@@ -11,7 +11,7 @@ const thryveInfo = conf.get('thryve');
  * @returns {Promise<any>}
  */
 function makePostRequest(url, body) {
-  const appAuth = `Basic ${Buffer.from( thryveInfo.appId + ":"+thryveInfo.appSecret).toString('base64')}`;
+  const appAuth = `Basic ${Buffer.from( thryveInfo.appId + ':'+thryveInfo.appSecret).toString('base64')}`;
   return request
     .post(url)
     .auth(thryveInfo.auth.user, thryveInfo.auth.password)
@@ -45,7 +45,7 @@ getDynamicValues = function(authenticationToken, start, stop, daily, thryveSourc
     endTimestamp: stop.toISOString().split('.')[0] + 'Z'
   };
 
-  if(thryveSourceCode) body.dataSource = thryveSourceCode;
+  if(thryveSourceCode) body.dataSources = thryveSourceCode;
 
   return makePostRequest(url, body);
 };

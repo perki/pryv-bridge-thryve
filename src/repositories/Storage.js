@@ -1,77 +1,46 @@
 const config = require('../config.js');
 const db = require('better-sqlite3')(config.get('database:path'));
 
-
 class StorageRepository {
   queries = {
-    queryInsertUser: db.prepare('INSERT OR REPLACE INTO users (pryvEndpoint, thryveToken) VALUES (@pryvEndpoint, @thryveToken)'),
-    queryGetUser: db.prepare('SELECT * FROM users WHERE pryvEndpoint = @pryvEndpoint'),
-    queryGetUserForThryveToken: db.prepare('SELECT pryvEndpoint FROM users WHERE thryveToken = @thryveToken'),
-    queryGetThryvTokenForUser: db.prepare('SELECT thryveToken FROM users WHERE pryvEndpoint = @pryvEndpoint'),
-    queryUpdateSyncSourceForUser: db.prepare(`
-        UPDATE sync 
-        SET dailyTime = @dailyTime,
-        intraTime = @intraTime
-        WHERE userpryv = @pryvEndpoint
-      `),
-    queryInsertSyncSourceForUser: db.prepare(`
-        INSERT OR REPLACE INTO sync (userpryv, source, dailyTime, intraTime )
-        VALUES (@pryvEndpoint, @source, @dailyTime, @intraTime)
-      `),
-    queryGetUserSync: db.prepare('SELECT * from sync WHERE userpryv = @pryvEndpoint'),
-    //
-    queryGetAllUsers: db.prepare('SELECT * FROM users'),
-  };
-
-  /**
-   *
-   * @param pryvEndpoint
-   * @returns {Object}
-   */
-  getSyncedSources = (pryvEndpoint) => {
-    return this.queries.queryGetUserSync.all({pryvEndpoint})
-      .reduce((obj, item) => {
-        obj[item.source] = item;
-        return obj;
-      }, {});
+    insertUser: db.prepare('INSERT OR REPLACE INTO users (pryvEndpoint, thryveToken, syncStatus) VALUES (@pryvEndpoint, @thryveToken, @syncStatus)'),
+    getUser: db.prepare('SELECT * FROM users WHERE pryvEndpoint = @pryvEndpoint'),
+    getUserForThryveToken: db.prepare('SELECT pryvEndpoint FROM users WHERE thryveToken = @thryveToken'),
+    getThryvTokenForUser: db.prepare('SELECT thryveToken FROM users WHERE pryvEndpoint = @pryvEndpoint'),
+    getAllUsers: db.prepare('SELECT * FROM users'),
+    updateSyncStatus: db.prepare(`
+      UPDATE users
+        SET syncStatus = @syncStatus
+      WHERE
+      pryvEndpoint = @pryvEndpoint
+    `)
   };
 
   /**
    *
    * @param {String} pryvEndpoint
    * @param {String} thryveToken
+   * @param {String} syncStatus
    */
-  addUser = (pryvEndpoint, thryveToken) => {
-    this.queries.queryInsertUser.run({pryvEndpoint, thryveToken, lastSync: 0});
+  addUser = (pryvEndpoint, thryveToken, syncStatus) => {
+    this.queries.insertUser.run({pryvEndpoint, thryveToken, syncStatus});
   };
 
-  /**
-   *
-   * @param pryvEndpoint
-   */
-  getUser = (pryvEndpoint) => {
-    return this.queries.queryGetUser.get({pryvEndpoint});
-  };
+  getUser = pryvEndpoint => this.queries.getUser.get({pryvEndpoint});
+
+  getUsers = () => this.queries.getAllUsers.all({});
+
+  updateUserSyncStatus = (pryvEndpoint, syncStatus) => this.queries.updateSyncStatus.run({pryvEndpoint, syncStatus});
 
   /**
    * @param {String} thryveToken
    */
-  pryvForThryveToken = thryveToken => this.queries.queryGetUserForThryveToken.get({thryveToken});
+  pryvForThryveToken = thryveToken => this.queries.getUserForThryveToken.get({thryveToken});
 
   /**
    * @param {String} pryvEndpoint
    */
-  tokenForPryvEndpoint = pryvEndpoint => this.queries.queryGetThryvTokenForUser.get({pryvEndpoint});
-
-  addSyncSourceForUser = (pryvEndpoint, source, dailyTime = 0, intraTime = 0) => {
-    this.queries.queryInsertSyncSourceForUser.run({pryvEndpoint, source, dailyTime, intraTime});
-  };
-
-  updateSyncSource(pryvEndpoint, dailyTime = 0, intraTime = 0) {
-    this.queries.queryUpdateSyncSourceForUser.run({pryvEndpoint, dailyTime, intraTime});
-  }
-
-  getAllToBeSynced = () => this.queries.queryGetAllUsers.all({});
+  tokenForPryvEndpoint = pryvEndpoint => this.queries.getThryvTokenForUser.get({pryvEndpoint});
 }
 
 module.exports = storage = new StorageRepository();
