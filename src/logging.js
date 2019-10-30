@@ -32,7 +32,7 @@ const color = winston.format.combine(
   }),
 );
 
-const myconsole = new winston.transports.Console({ format: color });
+const myconsole = new winston.transports.Console({ format: alignedWithColorsAndTime });
 
 
 
