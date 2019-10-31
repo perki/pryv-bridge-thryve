@@ -14,7 +14,7 @@ const initUser = user => {
   const userRecord = storage.getUser(user.pryvEndpoint);
 
   if (!userRecord) {
-    logger.info(`Init User: ${user.pryvEndpoint} at ${(new Date().toISOString())}`);
+    logger.info(`Init User: ${user.pryvEndpoint} | ${user.thryveToken} `);
 
     storage.addUser(user.pryvEndpoint, user.thryveToken, null);
     update(user);

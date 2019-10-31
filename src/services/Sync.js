@@ -25,7 +25,7 @@ class Sync {
   async syncData(isDaily = false, startTime = 0, endTime, source) {
     const parentId = isDaily ? 'thryve-daily' : 'thryve-intraday';
     let streams = await this.getUserStreams(parentId);
-    let sourcesLastSync;
+    let sourcesLastSync = {};
 
     if (streams.length) {
       if (source) streams = streams.filter(stream => ~stream.indexOf(source));
@@ -126,16 +126,20 @@ class Sync {
    * @returns {Promise<string[]>}
    */
   async getUserStreams(parentId) {
-    const streams = await pryv.getUserStreams(this.pryvEndpoint, parentId) || [];
-    let sourceStreams = [];
-    streams.forEach(stream => getLeaves(sourceStreams, stream));
-    return sourceStreams;
+    try {
+      const streams = await pryv.getUserStreams(this.pryvEndpoint, parentId) || [];
+      let sourceStreams = [];
+      streams.forEach(stream => getLeaves(sourceStreams, stream));
+      return sourceStreams;
+    } catch (e){
+      console.log(e);
+    }
   }
 
   /**
    *
    * @param {string[]} streams
-   * @returns {Promise<void>}
+   * @returns {object}
    */
   async getSourcesLastSyncTime(streams) {
     const streamsTimestamp = {};
