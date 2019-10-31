@@ -45,6 +45,10 @@ function validateTriggerRequest(triggerData) {
   const trigger = triggerData.sourceUpdate;
   const {updateType, connectionStatus, dataSource, authenticationToken} = trigger;
 
+  if (dataSource.trim().length > 2) { // in case of '11,12'
+    throw Error('Invalid dataSource');
+  }
+
   if (['NEW', 'DELETED'].includes(connectionStatus)) {
     logger.info(`Trigger, unknown type: ${updateType} TriggerData [${JSON.stringify(triggerData)}]`);
     return;
