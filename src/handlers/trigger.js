@@ -1,6 +1,7 @@
 const logger = require('../logging.js');
 const storage = require('../repositories/Storage.js');
 const Sync = require('../services/Sync');
+const availableSources = require('../schemaConverter/sources');
 
 /**
  * handle Triggers from thryve.
@@ -45,7 +46,7 @@ function validateTriggerRequest(triggerData) {
   const trigger = triggerData.sourceUpdate;
   const {updateType, connectionStatus, dataSource, authenticationToken} = trigger;
 
-  if (dataSource.trim().length > 2) { // in case of '11,12'
+  if (!availableSources[dataSource]) {
     throw Error('Invalid dataSource');
   }
 
