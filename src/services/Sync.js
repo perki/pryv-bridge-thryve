@@ -43,7 +43,7 @@ class Sync {
     if (data.events.length) {
       await this.uploadToPryv(data);
       logger.info(
-        `Successfully transferred ${isDaily ? 'daily' : 'intraDays'} data for user: ${this.pryvEndpoint}, source: ${source === -1 ? 'All' : availableSources[source]}`);
+        `Successfully transferred ${isDaily ? 'daily' : 'intraDays'} data for user: ${this.pryvEndpoint}, source: ${source ? 'All' : availableSources[source]}`);
     }
   }
 

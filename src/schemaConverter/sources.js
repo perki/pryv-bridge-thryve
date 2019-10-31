@@ -1,4 +1,4 @@
-exports.sources = {
+module.exports = {
   1: 'Fitbit',
   2: 'Garmin',
   3: 'Polar',

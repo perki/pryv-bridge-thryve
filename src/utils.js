@@ -1,5 +1,5 @@
 const schemaConverter = require('./schemaConverter');
-const {sources} = require('./schemaConverter/sources');
+const sources = require('./schemaConverter/sources');
 
 /**
  *

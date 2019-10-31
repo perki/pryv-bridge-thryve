@@ -1,5 +1,5 @@
 const definitions = require('./definitions');
-const availableSources = require('./sources').sources;
+const availableSources = require('./sources');
 const logger = require('../logging');
 
 const rootStream = require('../config.js').get('pryv:rootstream');
