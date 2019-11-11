@@ -12,13 +12,18 @@ const thryveInfo = conf.get('thryve');
  */
 function makePostRequest(url, body) {
   const appAuth = `Basic ${Buffer.from( thryveInfo.appId + ':'+thryveInfo.appSecret).toString('base64')}`;
-  return request
-    .post(url)
-    .auth(thryveInfo.auth.user, thryveInfo.auth.password)
-    .set('appID', thryveInfo.appId)
-    .set('AppAuthorization', appAuth)
-    .type('form')
-    .send(body);
+
+  try {
+	  return request
+		  .post(url)
+		  .auth(thryveInfo.auth.user, thryveInfo.auth.password)
+		  .set('appID', thryveInfo.appId)
+		  .set('AppAuthorization', appAuth)
+		  .type('form')
+		  .send(body);
+  } catch (e) {
+			logger.error(body.authenticationToken, e);
+  }
 }
 
 /**
