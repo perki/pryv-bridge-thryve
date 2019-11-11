@@ -12,7 +12,8 @@ const converters = {
   'NONE': data => null,
   'BOOLEAN': data => data.value === 'true',
   'ACT-1': data => {}, // TODO
-  'STRING': data => data
+  'STRING': data => data,
+  'DATE': data => data
 };
 
 const detailedCodes = {

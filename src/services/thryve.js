@@ -1,5 +1,6 @@
 const request = require('superagent');
 const conf = require('../config.js');
+const logger = require('../logging');
 
 const thryveAPI = conf.get('thryveAPI');
 const thryveInfo = conf.get('thryve');
@@ -13,17 +14,18 @@ const thryveInfo = conf.get('thryve');
 function makePostRequest(url, body) {
   const appAuth = `Basic ${Buffer.from( thryveInfo.appId + ':'+thryveInfo.appSecret).toString('base64')}`;
 
-  try {
-	  return request
-		  .post(url)
-		  .auth(thryveInfo.auth.user, thryveInfo.auth.password)
-		  .set('appID', thryveInfo.appId)
-		  .set('AppAuthorization', appAuth)
-		  .type('form')
-		  .send(body);
-  } catch (e) {
-			logger.error(body.authenticationToken, e);
-  }
+	return request
+		.post(url)
+		.auth(thryveInfo.auth.user, thryveInfo.auth.password)
+		.set('appID', thryveInfo.appId)
+		.set('AppAuthorization', appAuth)
+		.type('form')
+		.send(body)
+		.catch(e => {
+			if (e.statusCode === 400) {
+				logger.error(`Code: 400, Token: ${body.authenticationToken}: ${e.rawResponse}`);
+			}
+		})
 }
 
 /**
