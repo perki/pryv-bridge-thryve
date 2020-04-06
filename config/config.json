@@ -1,0 +1,29 @@
+{
+  "server": {
+    "port": 3000,
+    "ip": "127.0.0.1"
+  },
+  "db": {
+    "path": "./dthx.sqlite"
+  },
+  "thryveAPI": {
+    "userInfo": "https://service.und-gesund.de/restjson/userInformation",
+    "dynamicValues": "https://service.und-gesund.de/restjson/v5/dynamicEpochValues",
+    "dailyDynamicValues": "https://service.und-gesund.de/restjson/v4/dailyDynamicValues"
+  },
+  "thryve": {
+    "auth": {
+      "user": "rivahealth-api",
+      "password": "b9dAzkXrChw8"
+    },
+    "appId": "yDAawWK9r2FxqQbR",
+    "appSecret": "v57D373ug8raPUzk"
+  },
+  "priv": {
+    "baseDomen": "obpmprod.ch"
+  },
+  "cron": {
+    "run": "*/1 * * * *",
+    "period": -1
+  }
+}
