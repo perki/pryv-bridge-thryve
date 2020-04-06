@@ -5,29 +5,33 @@ const {
 } = require('date-fns');
 const config = require('../config');
 
-const getCurrentDate = function() {
+const getCurrentDate = () => {
     return new Date();
 };
 
-exports.getCurrentDateTimestamp = function() {
+const getCurrentDateTimestamp = () => {
     return getUnixTime(getCurrentDate());
 };
 
-exports.getPeriodAgoTimestamp = function () {
+const getPeriodAgoTimestamp = () => {
     const dayAgoDate = addDays(getCurrentDate(), config.get('cron:period'));
     return getUnixTime(dayAgoDate);
 };
 
-exports.getPeriodAgo = function() {
+const getPeriodAgo = () => {
     return addDays(getCurrentDate(), config.get('cron:period'));
 };
 
-exports.tsToDate = function (ts) {
+const tsToDate = (ts) => {
     return fromUnixTime(ts);
 };
 
 module.exports = {
-    getCurrentDate
+    getCurrentDate,
+    getCurrentDateTimestamp,
+    getPeriodAgoTimestamp,
+    getPeriodAgo,
+    tsToDate
 };
 
 
