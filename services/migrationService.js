@@ -22,7 +22,8 @@ class MigrationService {
                 lastMigrated,
                 pryvUsername,
                 thryveToken,
-                pryvToken
+                pryvToken,
+                accountHost
             } = usersToMigrate[uIndex];
             const streamList = [];
             const streamMap = {};
@@ -79,8 +80,8 @@ class MigrationService {
                 try {
                     // post to pryv
                     resPryv = await pryvService.postStreamsAndEvents(
-                            pryvUsername,
                             pryvToken,
+                            accountHost,
                             { streams: streamList, events: events }
                         );
                     logger.info("Pryv post success for user: " + pryvUsername);
