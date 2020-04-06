@@ -26,3 +26,8 @@ exports.tsToDate = function (ts) {
     return fromUnixTime(ts);
 };
 
+module.exports = {
+    getCurrentDate
+};
+
+
