@@ -22,10 +22,10 @@ class UsersController extends Controller {
 
     async addUser(req, res, next) {
         const {
-            thryveToken,
-            pryvToken,
-            pryvUsername,
-            accountHost
+            ThryveToken: thryveToken,
+            PryvToken: pryvToken,
+            AccountName: pryvUsername,
+            AccountHost: accountHost
         } = req.body;
 
         if(!thryveToken || !pryvToken || !pryvUsername || !accountHost) {

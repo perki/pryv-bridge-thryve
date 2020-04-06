@@ -17,7 +17,7 @@ class User extends Storage {
             .prepare(`CREATE UNIQUE INDEX IF NOT EXISTS thryveToken_index ON ${usersTable}(thryveToken)`)
             .run();
         this.db
-            .prepare(`CREATE UNIQUE INDEX IF NOT EXISTS privToken_index ON ${usersTable}(pryvToken)`)
+            .prepare(`CREATE UNIQUE INDEX IF NOT EXISTS pryvToken_index ON ${usersTable}(pryvToken)`)
             .run();
 
     }
@@ -34,7 +34,7 @@ class User extends Storage {
         const selectedUser = this.get(pryvUsername);
         if(selectedUser) {
             this.db
-                .prepare(`UPDATE ${usersTable} SET thryveToken = ?, privToken = ?, accountHost = ? WHERE pryvUsername = ?`)
+                .prepare(`UPDATE ${usersTable} SET thryveToken = ?, pryvToken = ?, accountHost = ? WHERE pryvUsername = ?`)
                 .run(thryveToken, pryvToken, accountHost, pryvUsername);
         } else {
             this.db
