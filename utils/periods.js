@@ -5,7 +5,7 @@ const {
 } = require('date-fns');
 const config = require('../config');
 
-exports.getCurrentDate = function() {
+const getCurrentDate = function() {
     return new Date();
 };
 
