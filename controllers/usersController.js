@@ -24,10 +24,11 @@ class UsersController extends Controller {
         const {
             thryveToken,
             pryvToken,
-            pryvUsername
+            pryvUsername,
+            accountHost
         } = req.body;
 
-        if(!thryveToken || !pryvToken || !pryvUsername) {
+        if(!thryveToken || !pryvToken || !pryvUsername || !accountHost) {
             return next(new Error('Invalid parameters', 400));
         }
 
@@ -51,7 +52,7 @@ class UsersController extends Controller {
         }
 
         try {
-            await pryvService.checkUser(pryvUsername, pryvToken);
+            await pryvService.checkUser(pryvUsername, pryvToken, accountHost);
         } catch (e) {
             console.log("error", e);
             return next(new Error('Invalid pryv token or user', 400));
@@ -61,7 +62,8 @@ class UsersController extends Controller {
         userService.addUser({
             thryveToken,
             pryvToken,
-            pryvUsername
+            pryvUsername,
+            accountHost
         });
 
         return res.json({status: "ok"});

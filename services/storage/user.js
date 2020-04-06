@@ -10,7 +10,8 @@ class User extends Storage {
                         (pryvUsername varchar(200) primary key,
                         thryveToken varchar(100),
                         pryvToken varchar(100),
-                        lastMigrated integer)`)
+                        lastMigrated integer,
+                        accountHost varchar(255))`)
             .run();
         this.db
             .prepare(`CREATE UNIQUE INDEX IF NOT EXISTS thryveToken_index ON ${usersTable}(thryveToken)`)
@@ -26,18 +27,20 @@ class User extends Storage {
         const {
             thryveToken,
             pryvToken,
-            pryvUsername
+            pryvUsername,
+            accountHost
         } = user;
 
         const selectedUser = this.get(pryvUsername);
         if(selectedUser) {
             this.db
-                .prepare(`UPDATE ${usersTable} SET thryveToken = ?, privToken = ? WHERE pryvUsername = ?`)
-                .run(thryveToken, pryvToken, pryvUsername);
+                .prepare(`UPDATE ${usersTable} SET thryveToken = ?, privToken = ?, accountHost = ? WHERE pryvUsername = ?`)
+                .run(thryveToken, pryvToken, accountHost, pryvUsername);
         } else {
             this.db
-                .prepare(`INSERT INTO ${usersTable} (pryvUsername, thryveToken, pryvToken, lastMigrated) VALUES (?, ?, ?, 0)`)
-                .run(pryvUsername, thryveToken, pryvToken);
+                .prepare(`INSERT INTO ${usersTable} (pryvUsername, thryveToken, pryvToken, lastMigrated, accountHost) 
+                            VALUES (?, ?, ?, 0, ?)`)
+                .run(pryvUsername, thryveToken, pryvToken, accountHost);
         }
     }
 
