@@ -41,11 +41,13 @@ class MigrationService {
             } catch (e) {
                 logger.error(e);
                 logger.error('Error getting data from Thryve for user: ' + pryvUsername);
+                userService.setLastMigratedData(pryvUsername);
                 continue;
             }
 
             if(!dynamicsResult.body[0].dataSources || dynamicsResult.body[0].dataSources.length === 0 ) {
                 logger.warn("No data for user: " + pryvUsername);
+                userService.setLastMigratedData(pryvUsername);
                 continue;
             }
 
@@ -58,10 +60,12 @@ class MigrationService {
                 } = dataSources[i];
                 if (!dataSource) {
                     logger.error('Invalid datasource content. ' + dataSource);
+                    userService.setLastMigratedData(pryvUsername);
                     continue;
                 }
                 if (!data) {
                     logger.error('Invalid data content: ' + data);
+                    userService.setLastMigratedData(pryvUsername);
                     continue;
                 }
 
