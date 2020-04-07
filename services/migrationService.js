@@ -89,9 +89,11 @@ class MigrationService {
                             { streams: streamList, events: events }
                         );
                     logger.info("Pryv post success for user: " + pryvUsername);
+                    console.log("Response result:", resPryv);
                     userService.setLastMigratedData(pryvUsername);
                 } catch (error) {
                     logger.error(error);
+                    console.log("Error result:", error);
                     throw new Error('Error while connecting to Pryv');
                 }
 
