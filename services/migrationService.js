@@ -6,7 +6,8 @@ const logger = require('../utils/logger');
 const {
     tsToDate,
     getPeriodAgo,
-    getCurrentDate
+    getCurrentDate,
+    PERIOD
 } = require('../utils/periods');
 const convertor = require('./convertor');
 
@@ -32,7 +33,7 @@ class MigrationService {
             logger.info("Processing user: " + pryvUsername);
 
             const startDate = lastMigrated === 0
-                ? getPeriodAgo()
+                ? getPeriodAgo(PERIOD.HOUR)
                 : tsToDate(lastMigrated);
             const endDate = getCurrentDate();
             let dynamicsResult = null;

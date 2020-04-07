@@ -1,9 +1,15 @@
 const {
     addDays,
     getUnixTime,
-    fromUnixTime
+    fromUnixTime,
+    addHours
 } = require('date-fns');
 const config = require('../config');
+
+const PERIOD = {
+    DAY: 'day',
+    HOUR: 'hour'
+};
 
 const getCurrentDate = () => {
     return new Date();
@@ -13,13 +19,31 @@ const getCurrentDateTimestamp = () => {
     return getUnixTime(getCurrentDate());
 };
 
-const getPeriodAgoTimestamp = () => {
-    const dayAgoDate = addDays(getCurrentDate(), config.get('cron:period'));
-    return getUnixTime(dayAgoDate);
+const getPeriodAgoTimestamp = (period = PERIOD.DAY) => {
+    let res;
+    switch (period) {
+        case PERIOD.HOUR:
+            res = addHours(getCurrentDate(), config.get('cron:period'));
+            break;
+
+        case PERIOD.DAY:
+        default:
+            res = addDays(getCurrentDate(), config.get('cron:period'));
+            break;
+    }
+
+    return getUnixTime(res);
 };
 
-const getPeriodAgo = () => {
-    return addDays(getCurrentDate(), config.get('cron:period'));
+const getPeriodAgo = (period = PERIOD.DAY) => {
+    switch (period) {
+        case PERIOD.HOUR:
+            return addHours(getCurrentDate(), config.get('cron:period'));
+
+        case PERIOD.DAY:
+        default:
+            return addDays(getCurrentDate(), config.get('cron:period'));
+    }
 };
 
 const tsToDate = (ts) => {
@@ -31,7 +55,8 @@ module.exports = {
     getCurrentDateTimestamp,
     getPeriodAgoTimestamp,
     getPeriodAgo,
-    tsToDate
+    tsToDate,
+    PERIOD
 };
 
 

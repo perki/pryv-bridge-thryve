@@ -1,7 +1,8 @@
 const storage = require('./storage');
 const {
     getPeriodAgoTimestamp,
-    getCurrentDateTimestamp
+    getCurrentDateTimestamp,
+    PERIOD
 } = require('../utils/periods');
 
 class UsersService {
@@ -11,8 +12,8 @@ class UsersService {
     }
 
     getAllForMigration() {
-        const dayBeforeTimestamp = getPeriodAgoTimestamp();
-        const requestResult = storage.user.getAllForMigration(dayBeforeTimestamp);
+        const periodBeforeTimestamp = getPeriodAgoTimestamp(PERIOD.HOUR);
+        const requestResult = storage.user.getAllForMigration(periodBeforeTimestamp);
         return requestResult;
     }
 
