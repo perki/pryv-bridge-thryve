@@ -90,6 +90,7 @@ class MigrationService {
                             accountHost,
                             { streams: streamList, events: events }
                         );
+                    console.log("Send Data:", JSON.stringify({ streams: streamList, events: events }));
                     logger.info("Pryv post success for user: " + pryvUsername);
                     console.log("Response result:", JSON.stringify(resPryv));
                     userService.setLastMigratedData(pryvUsername);
