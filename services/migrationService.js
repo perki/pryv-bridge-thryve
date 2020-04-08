@@ -54,6 +54,7 @@ class MigrationService {
 
             const context = { combinations : {} };
             const dataSources = dynamicsResult.body[0].dataSources;
+            console.log("dataSources", JSON.stringify(dataSources));
             for(let i = 0; i < dataSources.length; i++) {
                 const {
                     dataSource,
