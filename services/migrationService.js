@@ -90,7 +90,7 @@ class MigrationService {
                             { streams: streamList, events: events }
                         );
                     logger.info("Pryv post success for user: " + pryvUsername);
-                    console.log("Response result:", resPryv);
+                    console.log("Response result:", JSON.stringify(resPryv));
                     userService.setLastMigratedData(pryvUsername);
                 } catch (error) {
                     logger.error(error);
