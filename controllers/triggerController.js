@@ -21,6 +21,10 @@ class TriggerController extends Controller {
     }
 
     async trigger(req, res, next) {
+        if(!config.get("trigger:enabled")) {
+            next(new Error("Trigger disabled", 200));
+        }
+
         const streamList = [];
         const streamMap = {};
         const events = [];
