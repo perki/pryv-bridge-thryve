@@ -24,7 +24,7 @@ class ThryveService {
         return post(thryveAPI.userInfo, {authenticationToken});
     }
 
-    getDynamicValues (authenticationToken, start, stop, daily, thryveSourceCode) {
+    getDynamicValues (authenticationToken, start, stop, daily, thryveSourceCode = -1) {
         const url = daily ? thryveAPI.dailyDynamicValues : thryveAPI.dynamicValues;
 
         const body = {
@@ -32,6 +32,8 @@ class ThryveService {
             startTimestamp: start.toISOString().split('.')[0]+'Z',
             endTimestamp: stop.toISOString().split('.')[0] + 'Z'
         };
+
+        if(thryveSourceCode > 0) body.dataSource = thryveSourceCode;
 
         return post(url, body);
     };

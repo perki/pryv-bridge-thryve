@@ -32,7 +32,7 @@ class TriggerController extends Controller {
             next(new Error("Invalid Auth Key", 401));
         }
 
-        if(!data || !data.partnerUserID) {
+        if(!data || !data.partnerUserID || !data.createdAt || !data.dataSource) {
             next(new Error("No data in request", 400));
         }
 
@@ -49,7 +49,7 @@ class TriggerController extends Controller {
 
         const migrationService = new MigrationService();
         try {
-            await migrationService.migrateUser(pryvUsername);
+            await migrationService.migrateUser(pryvUsername, data.createdAt, data.dataSource);
         } catch (e) {
             next(new Error(e.message, 500));
         }

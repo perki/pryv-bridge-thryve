@@ -26,7 +26,7 @@ class MigrationService {
     }
 
 
-    async migrateUser(user) {
+    async migrateUser(user, createdAt = null, thryeveSourceCode = -1) {
         const {
             lastMigrated,
             pryvUsername,
@@ -49,7 +49,7 @@ class MigrationService {
         const endDate = getCurrentDate();
         let dynamicsResult = null;
         try {
-            dynamicsResult = await thryveService.getDynamicValues(thryveToken, startDate, endDate, false, -1);
+            dynamicsResult = await thryveService.getDynamicValues(thryveToken, startDate, endDate, false, thryeveSourceCode );
         } catch (e) {
             //logger.error(e);
             //logger.error('Error getting data from Thryve for user: ' + pryvUsername);
@@ -83,6 +83,9 @@ class MigrationService {
             }
 
             for (let j = 0; j < data.length; j++) {
+                if(createdAt && data[j].createdAt !== createdAt) {
+                    continue;
+                }
                 const res = convertor.thryveToPryv(dataSource, data[j], context);
                 if(!res) break;
                 events.push(res.event);
