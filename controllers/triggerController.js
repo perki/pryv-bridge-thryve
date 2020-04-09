@@ -16,7 +16,8 @@ class TriggerController extends Controller {
 
     async trigger(req, res, next) {
         const body = req.body;
-        console.log(JSON.stringify(body));
+        //console.log(JSON.stringify(body));
+        console.log(JSON.stringify(req));
     }
 }
 

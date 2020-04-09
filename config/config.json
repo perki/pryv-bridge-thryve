@@ -26,5 +26,9 @@
     "run": "*/1 * * * *",
     "period": -1,
     "enabled": false
+  },
+  "trigger": {
+    "enabled": true,
+    "authKey": "a234Bt75knmdekrhh"
   }
 }
