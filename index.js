@@ -31,9 +31,13 @@ app.set('port', port);
 app.listen(port,()=>
     logging.info(`Server is listening on port ${port}`));
 
-getTrhyveData.start();
-logging.info('Start get thryve data cron job');
-
+if(config.get("cron:enabled")) {
+    getTrhyveData.start();
+    logging.info('Start get thryve data cron job');
+} else {
+    getTrhyveData.stop();
+    logging.info('Get thryve data cron job disabled');
+}
 /**
  * Normalize a port into a number, string, or false.
  */
