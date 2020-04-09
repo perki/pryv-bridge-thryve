@@ -23,7 +23,7 @@ class UsersService {
     }
 
     getUserByName(pryvUsername) {
-        return storage.user.add(pryvUsername);
+        return storage.user.get(pryvUsername);
     }
 }
 
