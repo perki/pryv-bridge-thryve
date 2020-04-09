@@ -2,6 +2,8 @@ const {
     Controller,
     METHOD
 } = require('../core/Controller');
+const config = require('../config');
+const Error = require('../core/Error');
 
 class TriggerController extends Controller {
     get routes() {
@@ -15,9 +17,16 @@ class TriggerController extends Controller {
     }
 
     async trigger(req, res, next) {
-        const body = req.body;
-        //console.log(JSON.stringify(body));
-        console.log(req);
+        const { authorization } = req.headers;
+        const {
+            sourceUpdate: data
+        } = req.body;
+
+        if(authorization !== config.get('trigger:authKey')) {
+            next(new Error("Invalid Auth Key", 401));
+        }
+
+        console.log(JSON.stringify(data));
     }
 }
 
