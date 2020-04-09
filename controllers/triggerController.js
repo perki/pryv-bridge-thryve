@@ -5,9 +5,7 @@ const {
 const config = require('../config');
 const Error = require('../core/Error');
 const UserService = require('../services/usersService');
-const convertor = require('../services/convertor');
-const PryvService = require('../services/pryvService');
-const logger = require('../utils/logger');
+const MigrationService = require('../services/migrationService');
 
 class TriggerController extends Controller {
     get routes() {
@@ -25,10 +23,6 @@ class TriggerController extends Controller {
             next(new Error("Trigger disabled", 200));
         }
 
-        const streamList = [];
-        const streamMap = {};
-        const events = [];
-        const context = { combinations : {} };
         const { authorization } = req.headers;
         const {
             sourceUpdate: data
@@ -50,40 +44,17 @@ class TriggerController extends Controller {
             next(new Error("User not found", 404));
         }
         const {
-            pryvUsername,
-            pryvToken,
-            accountHost
+            pryvUsername
         } = user;
 
-        const convertResult = convertor.thryveToPryv(data.dataSource, data, context);
-        if(!convertResult) {
-            next(new Error("Impossible to convert this data", 400));
-        }
-        events.push(convertResult.event);
-        convertResult.streams.map(function (stream) {
-            if (streamMap[stream.id]) return;
-            streamList.push(stream);
-            streamMap[stream.id] = stream;
-        });
-
-        let resPryv = null;
-        const pryvService = new PryvService();
+        const migrationService = new MigrationService();
         try {
-            // post to pryv
-            resPryv = await pryvService.postStreamsAndEvents(
-                pryvToken,
-                accountHost,
-                { streams: streamList, events: events }
-            );
-            console.log("Send Data:", JSON.stringify({ streams: streamList, events: events }));
-            logger.info("Pryv post success for user: " + pryvUsername);
-            console.log("Response result:", JSON.stringify(resPryv));
-            userService.setLastMigratedData(pryvUsername);
-        } catch (error) {
-            logger.error(error);
-            console.log("Error result:", error);
-            next(new Error('Error while connecting to Pryv', 500));
+            await migrationService.migrateUser(pryvUsername);
+        } catch (e) {
+            next(new Error(e.message, 500));
         }
+
+        res.json({status: "ok"});
     }
 }
 
