@@ -94,6 +94,7 @@ class MigrationService {
                     logger.warn("Event not found in " + JSON.stringify(data[j]));
                     continue;
                 }
+                logger.info("Event found in " + JSON.stringify(data[j]));
                 const res = convertor.thryveToPryv(dataSource, data[j], context);
                 if(!res) break;
                 events.push(res.event);
