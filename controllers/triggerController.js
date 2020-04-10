@@ -6,6 +6,8 @@ const config = require('../config');
 const Error = require('../core/Error');
 const UserService = require('../services/usersService');
 const MigrationService = require('../services/migrationService');
+const logger = require('../utils/logger');
+
 
 class TriggerController extends Controller {
     get routes() {
@@ -20,7 +22,7 @@ class TriggerController extends Controller {
 
     async trigger(req, res, next) {
         if(!config.get("trigger:enabled")) {
-            next(new Error("Trigger disabled", 200));
+            next(new Error("Trigger disabled", 500));
         }
 
         const { authorization } = req.headers;
@@ -36,11 +38,10 @@ class TriggerController extends Controller {
             next(new Error("No data in request", 400));
         }
 
-        console.log(JSON.stringify(data));
         const userService = new UserService();
         const user = userService.getUserByName(data.partnerUserID);
-        console.log("User", user);
         if(!user) {
+            logger.warn("User not found: " + data.partnerUserID);
             next(new Error("User not found", 404));
         }
 
@@ -48,9 +49,11 @@ class TriggerController extends Controller {
         try {
             await migrationService.migrateUser(user, data.createdAt, data.dataSource);
         } catch (e) {
+            logger.error(e.message);
             next(new Error(e.message, 500));
         }
 
+        logger.info("User " + data.partnerUserID + " processed.");
         res.json({status: "ok"});
     }
 }

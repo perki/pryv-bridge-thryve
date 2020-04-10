@@ -55,13 +55,11 @@ class MigrationService {
                 : tsToDate(lastMigrated);
             endDate = getCurrentDate();
         }
-        console.log("startDate", startDate);
-        console.log("endDate", endDate);
+
         let dynamicsResult = null;
         try {
             dynamicsResult = await thryveService.getDynamicValues(thryveToken, startDate, endDate, false, thryeveSourceCode );
         } catch (e) {
-            //logger.error(e);
             logger.error('Error getting data from Thryve for user: ' + pryvUsername);
             userService.setLastMigratedData(pryvUsername);
             throw new Error('Error getting data from Thryve for user: ' + pryvUsernam);
@@ -75,7 +73,6 @@ class MigrationService {
 
         const context = { combinations : {} };
         const dataSources = dynamicsResult.body[0].dataSources;
-        console.log("dataSources", JSON.stringify(dataSources));
         for(let i = 0; i < dataSources.length; i++) {
             const {
                 dataSource,
@@ -93,10 +90,8 @@ class MigrationService {
             }
 
             for (let j = 0; j < data.length; j++) {
-                console.log("CREATED AT TEST:");
-                console.log("createdAt", createdAt);
-                console.log("data.createdAt", data[j].createdAt);
                 if(createdAt && data[j].createdAt !== createdAt) {
+                    logger.warn("Event not found in " + JSON.stringify(data[j]));
                     continue;
                 }
                 const res = convertor.thryveToPryv(dataSource, data[j], context);
@@ -117,13 +112,10 @@ class MigrationService {
                     accountHost,
                     { streams: streamList, events: events }
                 );
-                console.log("Send Data:", JSON.stringify({ streams: streamList, events: events }));
                 logger.info("Pryv post success for user: " + pryvUsername);
-                console.log("Response result:", JSON.stringify(resPryv));
                 userService.setLastMigratedData(pryvUsername);
             } catch (error) {
                 logger.error(error);
-                console.log("Error result:", error);
                 throw new Error('Error while connecting to Pryv');
             }
 
