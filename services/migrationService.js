@@ -26,7 +26,7 @@ class MigrationService {
     }
 
 
-    async migrateUser(user, createdAt = null, thryeveSourceCode = -1) {
+    async migrateUser(user, startDateTS = null, endDateTS = null, createdAt = null, thryeveSourceCode = -1) {
         const {
             lastMigrated,
             pryvUsername,

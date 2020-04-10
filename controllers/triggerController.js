@@ -43,13 +43,10 @@ class TriggerController extends Controller {
         if(!user) {
             next(new Error("User not found", 404));
         }
-        const {
-            pryvUsername
-        } = user;
 
         const migrationService = new MigrationService();
         try {
-            await migrationService.migrateUser(user, data.createdAt, data.dataSource);
+            await migrationService.migrateUser(user, data.startTimestamp, data.endTimestamp, data.createdAt, data.dataSource);
         } catch (e) {
             next(new Error(e.message, 500));
         }
