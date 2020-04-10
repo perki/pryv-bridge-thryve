@@ -43,10 +43,18 @@ class MigrationService {
 
         logger.info("Processing user: " + pryvUsername);
 
-        const startDate = lastMigrated === 0
-            ? getPeriodAgo(PERIOD.HOUR)
-            : tsToDate(lastMigrated);
-        const endDate = getCurrentDate();
+        let startDate;
+        let endDate;
+
+        if(startDateTS && endDateTS) {
+            startDate = startDateTS;
+            endDate = endDateTS;
+        } else {
+            startDate = lastMigrated === 0
+                ? getPeriodAgo(PERIOD.HOUR)
+                : tsToDate(lastMigrated);
+            endDate = getCurrentDate();
+        }
         let dynamicsResult = null;
         try {
             dynamicsResult = await thryveService.getDynamicValues(thryveToken, startDate, endDate, false, thryeveSourceCode );
