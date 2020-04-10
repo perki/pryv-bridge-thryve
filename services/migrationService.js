@@ -6,7 +6,7 @@ const {
     tsToDate,
     getPeriodAgo,
     getCurrentDate,
-    dateToTS,
+    getAgo,
     PERIOD
 } = require('../utils/periods');
 const convertor = require('./convertor');
@@ -26,7 +26,7 @@ class MigrationService {
     }
 
 
-    async migrateUser(user, startDateTS = null, endDateTS = null, createdAt = null, thryeveSourceCode = -1) {
+    async migrateUser(user, createdAt = null, thryeveSourceCode = -1) {
         const {
             lastMigrated,
             pryvUsername,
@@ -46,9 +46,9 @@ class MigrationService {
         let startDate;
         let endDate;
 
-        if(startDateTS && endDateTS) {
-            startDate = new Date(startDateTS);
-            endDate = new Date(endDateTS);
+        if(createdAt) {
+            startDate = getAgo(new Date(createdAt), -10);
+            endDate = getAgo(new Date(createdAt), 10);
         } else {
             startDate = lastMigrated === 0
                 ? getPeriodAgo(PERIOD.HOUR)
