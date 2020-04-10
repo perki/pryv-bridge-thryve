@@ -48,7 +48,7 @@ class MigrationService {
 
         if(createdAt) {
             startDate = getAgo(new Date(createdAt), -5, PERIOD.MINUTE);
-            endDate = getAgo(new Date(createdAt), 1, PERIOD.MINUTE);
+            endDate = getCurrentDate();
         } else {
             startDate = lastMigrated === 0
                 ? getPeriodAgo(PERIOD.HOUR)
