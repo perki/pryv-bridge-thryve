@@ -50,12 +50,17 @@ const tsToDate = (ts) => {
     return fromUnixTime(ts);
 };
 
+const dateToTS = (date) => {
+    return getUnixTime(date);
+};
+
 module.exports = {
     getCurrentDate,
     getCurrentDateTimestamp,
     getPeriodAgoTimestamp,
     getPeriodAgo,
     tsToDate,
+    dateToTS,
     PERIOD
 };
 

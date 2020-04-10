@@ -2,11 +2,11 @@ const UserService = require('./usersService');
 const ThryveService = require('./thryveService');
 const PryvService = require('./pryvService');
 const logger = require('../utils/logger');
-
 const {
     tsToDate,
     getPeriodAgo,
     getCurrentDate,
+    dateToTS,
     PERIOD
 } = require('../utils/periods');
 const convertor = require('./convertor');
@@ -47,8 +47,8 @@ class MigrationService {
         let endDate;
 
         if(startDateTS && endDateTS) {
-            startDate = startDateTS;
-            endDate = endDateTS;
+            startDate = dateToTS(startDateTS);
+            endDate = dateToTS(endDateTS);
         } else {
             startDate = lastMigrated === 0
                 ? getPeriodAgo(PERIOD.HOUR)
