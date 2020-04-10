@@ -39,7 +39,7 @@ class UsersController extends Controller {
         try {
             thryveUserInfo = await thryveService.userInfo(thryveToken);
         } catch (e) {
-            logger.error("API addUser. Invalid thryve user", e);
+            logger.error("API addUser. Invalid thryve user.");
             if(e.rawResponse.indexOf('AuthenticationToken') > -1) {
                 return next(new Error('Invalid thryve user', 400));
             } else {
@@ -48,13 +48,14 @@ class UsersController extends Controller {
         }
 
         if(thryveUserInfo.body[0].partnerUserID !== pryvUsername) {
+            logger.error("Invalid user name " + pryvUsername);
             return next(new Error('Invalid user name', 400));
         }
 
         try {
             await pryvService.checkUser(pryvUsername, pryvToken, accountHost);
         } catch (e) {
-            console.log("error", e);
+            logger.error('Invalid pryv token or user');
             return next(new Error('Invalid pryv token or user', 400));
         }
 

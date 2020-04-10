@@ -19,7 +19,6 @@ class User extends Storage {
         this.db
             .prepare(`CREATE UNIQUE INDEX IF NOT EXISTS pryvToken_index ON ${usersTable}(pryvToken)`)
             .run();
-
     }
 
 

@@ -21,6 +21,10 @@ class UsersService {
         const current = getCurrentDateTimestamp();
         storage.user.setLastMigrated(pryvUsername, current);
     }
+
+    getUserByName(pryvUsername) {
+        return storage.user.get(pryvUsername);
+    }
 }
 
 
