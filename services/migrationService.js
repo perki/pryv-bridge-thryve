@@ -60,13 +60,13 @@ class MigrationService {
             dynamicsResult = await thryveService.getDynamicValues(thryveToken, startDate, endDate, false, thryeveSourceCode );
         } catch (e) {
             //logger.error(e);
-            //logger.error('Error getting data from Thryve for user: ' + pryvUsername);
+            logger.error('Error getting data from Thryve for user: ' + pryvUsername);
             userService.setLastMigratedData(pryvUsername);
             throw new Error('Error getting data from Thryve for user: ' + pryvUsernam);
         }
 
         if(!dynamicsResult.body[0].dataSources || dynamicsResult.body[0].dataSources.length === 0 ) {
-            //logger.warn("No data for user: " + pryvUsername);
+            logger.warn("No data for user: " + pryvUsername);
             userService.setLastMigratedData(pryvUsername);
             throw new Error("No data for user: " + pryvUsername);
         }
@@ -91,6 +91,9 @@ class MigrationService {
             }
 
             for (let j = 0; j < data.length; j++) {
+                console.log("CREATED AT TEST:");
+                console.log("createdAt", createdAt);
+                console.log("data.createdAt", data[j].createdAt);
                 if(createdAt && data[j].createdAt !== createdAt) {
                     continue;
                 }
