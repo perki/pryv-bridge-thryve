@@ -22,7 +22,7 @@ class TriggerController extends Controller {
 
     async trigger(req, res, next) {
         if(!config.get("trigger:enabled")) {
-            next(new Error("Trigger disabled", 500));
+            return next(new Error("Trigger disabled", 500));
         }
 
         const { authorization } = req.headers;
@@ -31,18 +31,18 @@ class TriggerController extends Controller {
         } = req.body;
 
         if(authorization !== config.get('trigger:authKey')) {
-            next(new Error("Invalid Auth Key", 401));
+            return next(new Error("Invalid Auth Key", 401));
         }
 
         if(!data || !data.partnerUserID || !data.createdAt || !data.dataSource) {
-            next(new Error("No data in request", 400));
+            return next(new Error("No data in request", 400));
         }
 
         const userService = new UserService();
         const user = userService.getUserByName(data.partnerUserID);
         if(!user) {
             logger.warn("User not found: " + data.partnerUserID);
-            next(new Error("User not found", 404));
+            return next(new Error("User not found", 404));
         }
 
         const migrationService = new MigrationService();
@@ -50,11 +50,11 @@ class TriggerController extends Controller {
             await migrationService.migrateUser(user, data.createdAt, data.dataSource);
         } catch (e) {
             logger.error(e.message);
-            next(new Error(e.message, 500));
+            return next(new Error(e.message, 500));
         }
 
         logger.info("User " + data.partnerUserID + " processed.");
-        res.json({status: "ok"});
+        return res.json({status: "ok"});
     }
 }
 
