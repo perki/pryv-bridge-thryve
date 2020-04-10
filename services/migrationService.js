@@ -55,6 +55,8 @@ class MigrationService {
                 : tsToDate(lastMigrated);
             endDate = getCurrentDate();
         }
+        console.log("startDate", startDate);
+        console.log("endDate", endDate);
         let dynamicsResult = null;
         try {
             dynamicsResult = await thryveService.getDynamicValues(thryveToken, startDate, endDate, false, thryeveSourceCode );
