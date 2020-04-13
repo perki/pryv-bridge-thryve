@@ -29,16 +29,12 @@ class ThryveService {
 
         const body = {
             authenticationToken: authenticationToken,
+            startTimestamp: start.toISOString().split('.')[0]+'Z',
+            endTimestamp: stop.toISOString().split('.')[0] + 'Z'
         };
 
-        if(!createdAt) {
-            body.startTimestamp = start.toISOString().split('.')[0]+'Z';
-            body.endTimestamp = stop.toISOString().split('.')[0] + 'Z';
-        } else {
-            body.createdAt = start.toISOString().split('.')[0]+'Z';
-        }
 
-
+        if(createdAt) body.createdAt = start.toISOString().split('.')[0]+'Z';
         if(thryveSourceCode > 0) body.dataSource = thryveSourceCode;
 
         return post(url, body);

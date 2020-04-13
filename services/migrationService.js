@@ -46,7 +46,10 @@ class MigrationService {
         let startDate;
         let endDate;
 
-        if(!createdAt) {
+        if(createdAt) {
+            startDate = getAgo(new Date(createdAt), -5, PERIOD.HOUR);
+            endDate = getCurrentDate();
+        } else {
             startDate = lastMigrated === 0
                 ? getPeriodAgo(PERIOD.HOUR)
                 : tsToDate(lastMigrated);
@@ -69,7 +72,7 @@ class MigrationService {
         } catch (e) {
             logger.error('Error getting data from Thryve for user: ' + pryvUsername);
             userService.setLastMigratedData(pryvUsername);
-            throw new Error('Error getting data from Thryve for user: ' + pryvUsernam);
+            throw new Error('Error getting data from Thryve for user: ' + pryvUsername);
         }
 
         if(!dynamicsResult.body[0].dataSources || dynamicsResult.body[0].dataSources.length === 0 ) {
