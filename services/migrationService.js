@@ -26,7 +26,7 @@ class MigrationService {
     }
 
 
-    async migrateUser(user, createdAt = null, thryeveSourceCode = -1) {
+    async migrateUser(user, thryeveSourceCode = -1, startTimestamp = null, endTimestamp = null,) {
         const {
             lastMigrated,
             pryvUsername,
@@ -46,9 +46,11 @@ class MigrationService {
         let startDate;
         let endDate;
 
-        if(createdAt) {
-            startDate = getAgo(new Date(createdAt), -5, PERIOD.HOUR);
-            endDate = getCurrentDate();
+        if(startTimestamp && endTimestamp) {
+            startDate = new Date(startTimestamp);
+            endDate = new Date(endTimestamp);
+            /*startDate = getAgo(new Date(createdAt), -5, PERIOD.HOUR);
+            endDate = getCurrentDate();*/
         } else {
             startDate = lastMigrated === 0
                 ? getPeriodAgo(PERIOD.HOUR)
@@ -96,10 +98,10 @@ class MigrationService {
             }
 
             for (let j = 0; j < data.length; j++) {
-                if(createdAt && data[j].createdAt !== createdAt) {
+                /*if(createdAt && data[j].createdAt !== createdAt) {
                     logger.warn("Event not found in " + JSON.stringify(data[j]));
                     continue;
-                }
+                }*/
                 logger.info("Event found in " + JSON.stringify(data[j]));
                 const res = convertor.thryveToPryv(dataSource, data[j], context);
                 if(!res) break;
