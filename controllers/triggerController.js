@@ -35,7 +35,7 @@ class TriggerController extends Controller {
             return next(new Error("Invalid Auth Key", 401));
         }
 
-        if(!data || !data.partnerUserID || !data.createdAt || !data.dataSource) {
+        if(!data || !data.partnerUserID || !data.dataSource) {
             return next(new Error("No data in request", 400));
         }
 

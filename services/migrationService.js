@@ -58,7 +58,6 @@ class MigrationService {
             endDate = getCurrentDate();
         }
 
-        console.log("createdAt:", createdAt);
         console.log("startDate:", startDate);
         console.log("endDate:", endDate);
 
