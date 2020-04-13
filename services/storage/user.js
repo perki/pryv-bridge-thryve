@@ -21,7 +21,7 @@ class User extends Storage {
             .run();
 
         this.db
-            .prepare(`DELETE FROM ${usersTable} WHERE pryvUsername = NULL`)
+            .prepare(`DELETE FROM ${usersTable} WHERE pryvUsername is NULL`)
             .run();
     }
 

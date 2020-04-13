@@ -16,6 +16,8 @@ class MigrationService {
         const userService = new UserService();
         const usersToMigrate = userService.getAllForMigration();
 
+        console.log(usersToMigrate);
+
         for(let uIndex = 0; uIndex < usersToMigrate.length; uIndex++) {
             try {
                 await this.migrateUser(usersToMigrate[uIndex]);
@@ -101,6 +103,7 @@ class MigrationService {
                     continue;
                 }*/
                 logger.info("Event found in " + JSON.stringify(data[j]));
+                logger.info("DataSource:" + dataSource);
                 const res = convertor.thryveToPryv(dataSource, data[j], context);
                 if(!res) break;
                 events.push(res.event);

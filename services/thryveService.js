@@ -37,6 +37,8 @@ class ThryveService {
         if(createdAt) body.createdAt = createdAt;
         if(thryveSourceCode > 0) body.dataSource = thryveSourceCode;
 
+        console.log("REQUEST:", body);
+
         return post(url, body);
     };
 }
