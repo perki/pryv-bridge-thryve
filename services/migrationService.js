@@ -26,7 +26,7 @@ class MigrationService {
     }
 
 
-    async migrateUser(user, thryeveSourceCode = -1, startTimestamp = null, endTimestamp = null,) {
+    async migrateUser(user, thryeveSourceCode = -1, createdAt = null) {
         const {
             lastMigrated,
             pryvUsername,
@@ -46,12 +46,7 @@ class MigrationService {
         let startDate;
         let endDate;
 
-        if(startTimestamp && endTimestamp) {
-            startDate = new Date(startTimestamp);
-            endDate = new Date(endTimestamp);
-            /*startDate = getAgo(new Date(createdAt), -5, PERIOD.HOUR);
-            endDate = getCurrentDate();*/
-        } else {
+        if(!createdAt) {
             startDate = lastMigrated === 0
                 ? getPeriodAgo(PERIOD.HOUR)
                 : tsToDate(lastMigrated);
@@ -63,7 +58,13 @@ class MigrationService {
 
         let dynamicsResult = null;
         try {
-            dynamicsResult = await thryveService.getDynamicValues(thryveToken, startDate, endDate, false, thryeveSourceCode );
+            dynamicsResult = await thryveService.getDynamicValues(
+                thryveToken,
+                startDate,
+                endDate,
+                createdAt ? createdAt : null,
+                false,
+                thryeveSourceCode );
         } catch (e) {
             logger.error('Error getting data from Thryve for user: ' + pryvUsername);
             userService.setLastMigratedData(pryvUsername);
