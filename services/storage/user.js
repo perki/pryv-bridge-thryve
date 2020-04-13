@@ -20,7 +20,9 @@ class User extends Storage {
             .prepare(`CREATE UNIQUE INDEX IF NOT EXISTS pryvToken_index ON ${usersTable}(pryvToken)`)
             .run();
 
-        this.db(`DELETE FROM ${usersTable} WHERE pryvUsername = NULL`);
+        this.db
+            .prepare(`DELETE FROM ${usersTable} WHERE pryvUsername = NULL`)
+            .run();
     }
 
 
