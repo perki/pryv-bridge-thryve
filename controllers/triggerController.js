@@ -35,7 +35,7 @@ class TriggerController extends Controller {
             return next(new Error("Invalid Auth Key", 401));
         }
 
-        if(!data || !data.partnerUserID || !data.dataSource) {
+        if(!data || !data.partnerUserID || !data.createdAt || !data.dataSource) {
             return next(new Error("No data in request", 400));
         }
 
@@ -48,7 +48,7 @@ class TriggerController extends Controller {
 
         const migrationService = new MigrationService();
         try {
-            await migrationService.migrateUser(user, data.dataSource, data.startTimestamp, data.endTimestamp);
+            await migrationService.migrateUser(user, data.dataSource, data.createdAt);
         } catch (e) {
             logger.error(e.message);
             return next(new Error(e.message, 500));

@@ -34,7 +34,7 @@ class ThryveService {
         };
 
 
-        if(createdAt) body.createdAt = start.toISOString().split('.')[0]+'Z';
+        if(createdAt) body.createdAt = createdAt;
         if(thryveSourceCode > 0) body.dataSource = thryveSourceCode;
 
         return post(url, body);

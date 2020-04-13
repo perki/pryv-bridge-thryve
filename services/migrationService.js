@@ -66,7 +66,7 @@ class MigrationService {
                 thryveToken,
                 startDate,
                 endDate,
-                createdAt ? new Date(createdAt) : null,
+                createdAt ? createdAt : null,
                 false,
                 thryeveSourceCode );
         } catch (e) {
