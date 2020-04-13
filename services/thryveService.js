@@ -29,8 +29,8 @@ class ThryveService {
 
         const body = {
             authenticationToken: authenticationToken,
-            //startTimestamp: start.toISOString().split('.')[0]+'Z',
-            //endTimestamp: stop.toISOString().split('.')[0] + 'Z'
+            startTimestamp: start.toISOString().split('.')[0]+'Z',
+            endTimestamp: stop.toISOString().split('.')[0] + 'Z'
         };
 
 
