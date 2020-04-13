@@ -56,6 +56,10 @@ class MigrationService {
             endDate = getCurrentDate();
         }
 
+        console.log("createdAt:", createdAt);
+        console.log("startDate:", startDate);
+        console.log("endDate:", endDate);
+
         let dynamicsResult = null;
         try {
             dynamicsResult = await thryveService.getDynamicValues(thryveToken, startDate, endDate, false, thryeveSourceCode );
@@ -70,6 +74,8 @@ class MigrationService {
             userService.setLastMigratedData(pryvUsername);
             throw new Error("No data for user: " + pryvUsername);
         }
+
+        console.log("dataSource:", JSON.stringify(dynamicsResult.body[0].dataSources));
 
         const context = { combinations : {} };
         const dataSources = dynamicsResult.body[0].dataSources;
