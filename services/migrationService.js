@@ -26,7 +26,7 @@ class MigrationService {
     }
 
 
-    async migrateUser(user, thryeveSourceCode = -1, createdAt = null) {
+    async migrateUser(user, thryeveSourceCode = -1, createdAt = null, startTimestamp = null, endTimestamp = null) {
         const {
             lastMigrated,
             pryvUsername,
@@ -47,8 +47,8 @@ class MigrationService {
         let endDate;
 
         if(createdAt) {
-            startDate = getAgo(new Date(createdAt), -5, PERIOD.HOUR);
-            endDate = getCurrentDate();
+            startDate = new Date(startTimestamp);
+            endDate = new Date(endTimestamp);
         } else {
             startDate = lastMigrated === 0
                 ? getPeriodAgo(PERIOD.HOUR)

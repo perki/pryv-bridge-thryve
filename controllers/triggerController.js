@@ -48,7 +48,7 @@ class TriggerController extends Controller {
 
         const migrationService = new MigrationService();
         try {
-            await migrationService.migrateUser(user, data.dataSource, data.createdAt);
+            await migrationService.migrateUser(user, data.dataSource, data.createdAt, date.startTimestamp, date.endTimestamp);
         } catch (e) {
             logger.error(e.message);
             return next(new Error(e.message, 500));
