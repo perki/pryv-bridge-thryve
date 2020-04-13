@@ -55,6 +55,7 @@ class MigrationService {
 
         console.log("startDate:", startDate);
         console.log("endDate:", endDate);
+        console.log("createdAt", createdAt);
 
         let dynamicsResult = null;
         try {
@@ -62,7 +63,7 @@ class MigrationService {
                 thryveToken,
                 startDate,
                 endDate,
-                createdAt ? createdAt : null,
+                createdAt ? new Date(createdAt) : null,
                 false,
                 thryeveSourceCode );
         } catch (e) {
