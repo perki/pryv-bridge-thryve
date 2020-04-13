@@ -47,8 +47,8 @@ class MigrationService {
         let endDate;
 
         if(createdAt) {
-            startDate = new Date(startTimestamp);
-            endDate = new Date(endTimestamp);
+            startDate = getAgo(new Date(createdAt), -1, PERIOD.DAY);
+            endDate = getCurrentDate();
         } else {
             startDate = lastMigrated === 0
                 ? getPeriodAgo(PERIOD.HOUR)
