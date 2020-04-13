@@ -51,14 +51,10 @@ class MigrationService {
             endDate = getCurrentDate();
         } else {
             startDate = lastMigrated === 0
-                ? getPeriodAgo(PERIOD.HOUR)
+                ? getPeriodAgo(PERIOD.DAY)
                 : tsToDate(lastMigrated);
             endDate = getCurrentDate();
         }
-
-        console.log("startDate:", startDate);
-        console.log("endDate:", endDate);
-        console.log("createdAt", createdAt);
 
         let dynamicsResult = null;
         try {
@@ -80,8 +76,6 @@ class MigrationService {
             userService.setLastMigratedData(pryvUsername);
             throw new Error("No data for user: " + pryvUsername);
         }
-
-        console.log("dataSource:", JSON.stringify(dynamicsResult.body[0].dataSources));
 
         const context = { combinations : {} };
         const dataSources = dynamicsResult.body[0].dataSources;

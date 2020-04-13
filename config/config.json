@@ -8,7 +8,7 @@
   },
   "thryveAPI": {
     "userInfo": "https://service.und-gesund.de/restjson/userInformation",
-    "dynamicValues": "https://service.und-gesund.de/restjson/v4/dynamicEpochValues",
+    "dynamicValues": "https://service.und-gesund.de/restjson/v5/dynamicEpochValues",
     "dailyDynamicValues": "https://service.und-gesund.de/restjson/v4/dailyDynamicValues"
   },
   "thryve": {
@@ -25,10 +25,10 @@
   "cron": {
     "run": "*/1 * * * *",
     "period": -1,
-    "enabled": false
+    "enabled": true
   },
   "trigger": {
-    "enabled": true,
+    "enabled": false,
     "authKey": "a234Bt75knmdekrhh"
   }
 }

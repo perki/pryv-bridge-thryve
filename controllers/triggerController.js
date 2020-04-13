@@ -30,7 +30,6 @@ class TriggerController extends Controller {
             sourceUpdate: data
         } = req.body;
 
-        console.log("Trigger data:", JSON.stringify(data));
         if(authorization !== config.get('trigger:authKey')) {
             return next(new Error("Invalid Auth Key", 401));
         }
