@@ -47,7 +47,7 @@ Content: 
   },
   "thryve": {
     "auth": {
-      "user": "****",
+      "user": "*****",
       "password": "*****"
     },
     "appId": "yDAawWK9r2FxqQbR",
@@ -58,9 +58,15 @@ Content: 
   },
   "cron": {
     "run": "*/1 * * * *",
-    "period": -1
+    "period": -1,
+    "enabled": false
+  },
+  "trigger": {
+    "enabled": true,
+    "authKey": "*******"
   }
 }
+
 ```
 
 Optionally you can add your own user to run tests
