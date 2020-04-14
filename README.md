@@ -20,9 +20,10 @@ Content: 
 
 ```json 
 {
-	"thryveToken": {ThryveToken},
-    "pryvToken": {PryvToken},
-    "pryvUsername": {PryvUsername}
+	"ThryveToken": "****",
+    "PryvToken": "*****",
+    "AccountName": "*****",
+    "AccountHost": "*****"
 }
 ```
 
