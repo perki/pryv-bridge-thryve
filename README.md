@@ -75,15 +75,32 @@ Optionally you can add your own user to run tests
 
 `npm start`
 
+
 The server will listen on the port specified in the configuration. Default = 2606.  
 
 To run in production an SSL termination should be set up with a reverse proxy such as nginx.
 
-# Dev
+# Run on production server
 
-Node.js Express APP. 
+1. As prerequisite PM2 manager should already installed (https://pm2.keymetrics.io)
+2. Go to project folder
+3. `pm2 start index.js`
 
-Stores Pryv-user // Thryve Token in a local sqlite Database
+# Update project on production server
+
+1. go to project folder
+2. `git pull origin <branch>` or simple `git pull`
+3. `pm2 restart index`
+
+# Monitoring on production
+
+Run `pm2 monit`
+
+
+# PM2 logging
+
+Logs are located in ~/.pm2/logs folder
+
 
 ## Definitions.js 
 
