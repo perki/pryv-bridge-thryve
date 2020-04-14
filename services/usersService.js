@@ -12,7 +12,7 @@ class UsersService {
     }
 
     getAllForMigration() {
-        const periodBeforeTimestamp = getPeriodAgoTimestamp(PERIOD.HOUR);
+        const periodBeforeTimestamp = getPeriodAgoTimestamp(PERIOD.DAY);
         const requestResult = storage.user.getAllForMigration(periodBeforeTimestamp);
         return requestResult;
     }

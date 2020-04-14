@@ -25,10 +25,10 @@
   "cron": {
     "run": "*/1 * * * *",
     "period": -1,
-    "enabled": false
+    "enabled": true
   },
   "trigger": {
-    "enabled": true,
+    "enabled": false,
     "authKey": "a234Bt75knmdekrhh"
   }
 }

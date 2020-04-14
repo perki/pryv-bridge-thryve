@@ -26,7 +26,7 @@ class MigrationService {
     }
 
 
-    async migrateUser(user, createdAt = null, thryeveSourceCode = -1) {
+    async migrateUser(user, thryeveSourceCode = -1, createdAt = null, startTimestamp = null, endTimestamp = null) {
         const {
             lastMigrated,
             pryvUsername,
@@ -47,22 +47,28 @@ class MigrationService {
         let endDate;
 
         if(createdAt) {
-            startDate = getAgo(new Date(createdAt), -5, PERIOD.HOUR);
+            startDate = getAgo(new Date(createdAt), -1, PERIOD.DAY);
             endDate = getCurrentDate();
         } else {
             startDate = lastMigrated === 0
-                ? getPeriodAgo(PERIOD.HOUR)
+                ? getPeriodAgo(PERIOD.DAY)
                 : tsToDate(lastMigrated);
             endDate = getCurrentDate();
         }
 
         let dynamicsResult = null;
         try {
-            dynamicsResult = await thryveService.getDynamicValues(thryveToken, startDate, endDate, false, thryeveSourceCode );
+            dynamicsResult = await thryveService.getDynamicValues(
+                thryveToken,
+                startDate,
+                endDate,
+                createdAt ? createdAt : null,
+                false,
+                thryeveSourceCode );
         } catch (e) {
             logger.error('Error getting data from Thryve for user: ' + pryvUsername);
             userService.setLastMigratedData(pryvUsername);
-            throw new Error('Error getting data from Thryve for user: ' + pryvUsernam);
+            throw new Error('Error getting data from Thryve for user: ' + pryvUsername);
         }
 
         if(!dynamicsResult.body[0].dataSources || dynamicsResult.body[0].dataSources.length === 0 ) {
@@ -90,11 +96,12 @@ class MigrationService {
             }
 
             for (let j = 0; j < data.length; j++) {
-                if(createdAt && data[j].createdAt !== createdAt) {
+                /*if(createdAt && data[j].createdAt !== createdAt) {
                     logger.warn("Event not found in " + JSON.stringify(data[j]));
                     continue;
-                }
+                }*/
                 logger.info("Event found in " + JSON.stringify(data[j]));
+                logger.info("DataSource:" + dataSource);
                 const res = convertor.thryveToPryv(dataSource, data[j], context);
                 if(!res) break;
                 events.push(res.event);
