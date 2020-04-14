@@ -16,8 +16,6 @@ class MigrationService {
         const userService = new UserService();
         const usersToMigrate = userService.getAllForMigration();
 
-        console.log(usersToMigrate);
-
         for(let uIndex = 0; uIndex < usersToMigrate.length; uIndex++) {
             try {
                 await this.migrateUser(usersToMigrate[uIndex]);
