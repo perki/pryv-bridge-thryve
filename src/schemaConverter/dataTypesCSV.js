@@ -94,8 +94,6 @@ const dataTypesCSV = [
   "3002;SPO2;Intraday;SPO2 detected (in this minute);DOUBLE;todo",
   "3029;HeartRateIntervals;Intraday;Comma-seperated array of RR-intervals;STRING;todo",
   "3030;VO2max;Daily;maximum cardiovascular oxygen intake in mol per minute and kilogram of body weight;DOUBLE;todo",
-  "3030;VO2max;Daily;maximum cardiovascular oxygen intake in mol per minute and kilogram of body weight;DOUBLE;todo",
-  "3030;VO2max;Intraday;maximum cardiovadcular oxygen intake in mol per minute and kilogram of body weight;DOUBLE;todo",
   "3030;VO2max;Intraday;maximum cardiovadcular oxygen intake in mol per minute and kilogram of body weight;DOUBLE;todo",
   "3031;FitnessAge;Daily;age-equivalent of cardiorespiratory fitness level;LONG;todo",
   "3032;VO2maxPercentile;Daily;percentile of VO2max in relation to age and gender specific overall population;LONG;todo",

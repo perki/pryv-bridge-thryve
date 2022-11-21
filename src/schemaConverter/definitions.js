@@ -1,6 +1,6 @@
 const logger = require('../logging');
 
-const dataTypesCSV = require('./dataTypes');
+const dataTypesCSV = require('./dataTypesCSV');
 
 /**
  - Definitions syntax and how to update this document can be found in README.md
@@ -65,8 +65,6 @@ dataTypesCSV.map(function(line) {
     converter: converter
   };
 });
-
-exports.sources = ["Dummy", "Fitbit", "Garmin", "Polar", "UNUSED", "Apple", "Samsung", "Misfit", "Withings", "Thryve Connector", "Thryve Wearable Connector", "Strava", "GoogleFit REST", "Xiaomi", "MyFitnessPal", "Runtastic", "Omron", "Suunto", "Oura", "Runkeeper", "Endomondo", "iHealth", "Abbott(FreeStyleLibre)", "Medisana", "Sleep As Android"];
 
 exports.dataTypes = dataTypes;
 

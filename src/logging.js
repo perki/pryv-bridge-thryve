@@ -1,6 +1,10 @@
 const winston = require('winston');
+const options = {
+  filename: 'logfile.log',
+  maxSize: 12000
+};
 
-const files = new winston.transports.File({ filename: 'logfile.log' });
+const files = new winston.transports.File(options);
 
 const alignedWithColorsAndTime = winston.format.combine(
   winston.format.colorize(),

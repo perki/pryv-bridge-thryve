@@ -1,16 +1,16 @@
 const request = require('superagent');
-const conf = require('./config.js');
+const conf = require('../config.js');
 
 const thryveAPI = conf.get('thryveAPI');
 const thryveInfo = conf.get('thryve');
 
 /**
  * Post to Thryve API
- *
- * @param {URL} url
- * @param {Object} body
+ * @param url
+ * @param body
+ * @returns {Promise<any>}
  */
-function post(url, body) {
+function makePostRequest(url, body) {
   const appAuth = `Basic ${Buffer.from( thryveInfo.appId + ":"+thryveInfo.appSecret).toString('base64')}`;
   return request
     .post(url)
@@ -22,20 +22,21 @@ function post(url, body) {
 }
 
 /**
- * Retrive userInfo
+ *
+ * @param authenticationToken
+ * @returns {Promise<{object}>}
  */
-exports.userInfo = function(authenticationToken) {
-  return post(thryveAPI.userInfo, authenticationToken);
-};
+getUserInfo = authenticationToken => makePostRequest(thryveAPI.userInfo, {authenticationToken});
 
 /**
  * @param {String} authenticationToken
  * @param {Date} start
  * @param {Date} stop
  * @param {Boolean} daily if true get Daily values, false to receive intraday
- * @param {String} thryveSourceCode
+ * @param {Number} thryveSourceCode
+ * @returns {Promise<{object}>}
  */
-exports.dynamicValues = function(authenticationToken, start, stop, daily, thryveSourceCode) {
+getDynamicValues = function(authenticationToken, start, stop, daily, thryveSourceCode) {
   const url = daily ? thryveAPI.dailyDynamicValues : thryveAPI.dynamicValues;
 
   const body = {
@@ -46,5 +47,10 @@ exports.dynamicValues = function(authenticationToken, start, stop, daily, thryve
 
   if(thryveSourceCode) body.dataSource = thryveSourceCode;
 
-  return post(url, body);
+  return makePostRequest(url, body);
+};
+
+module.exports = {
+  getUserInfo,
+  getDynamicValues
 };
